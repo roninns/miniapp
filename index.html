@@ -215,30 +215,20 @@
             margin-top: 8px;
         }
 
+        .badge-icon {
+            font-size: 20px;
+        }
+
         button:disabled {
             opacity: 0.5;
             transform: none;
             cursor: not-allowed;
         }
-
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="user-header">
+    <div class="user-header" id="userInfoBlock">
         <div class="avatar" id="userAvatar">👤</div>
         <div class="user-details">
             <div class="user-name" id="userFullName">Загрузка...</div>
@@ -268,7 +258,7 @@
         <button class="button primary-btn" id="sendMainBtn">
             ✨ Отправить администратору
         </button>
-
+        
         <div class="quick-actions">
             <button class="button secondary-btn" id="quickMessageBtn" style="flex:1">
                 📨 Приветственное
@@ -284,7 +274,7 @@
             🔒 Закрыть приложение
         </button>
         <div class="info-note">
-            Все обращения приходят напрямую администратору через защищенный канал
+            Все обращения приходят напрямую администратору
         </div>
     </div>
 
@@ -293,6 +283,7 @@
 
 <script>
     const ADMIN_CHAT_ID = 6996135336;
+    const BOT_TOKEN = "7974919589:AAEXpQ40DBA6hTx84ZdfgSFwS57-4Egzpos";
     
     const tg = window.Telegram.WebApp;
     tg.ready();
@@ -315,13 +306,14 @@
     let userFirstName = "";
     let userLastName = "";
     let userUsername = "";
+    let userDisplayName = "Гость";
     
     if (user) {
         userId = user.id || 0;
         userFirstName = user.first_name || "";
         userLastName = user.last_name || "";
         userUsername = user.username || "";
-        const userDisplayName = `${userFirstName} ${userLastName}`.trim() || "Пользователь";
+        userDisplayName = `${userFirstName} ${userLastName}`.trim() || "Пользователь";
         const userAvatarInitial = userFirstName ? userFirstName.charAt(0).toUpperCase() : "👤";
         userFullNameEl.innerHTML = `${userDisplayName} <span class="user-badge">TG user</span>`;
         userMetaEl.textContent = userUsername ? `@${userUsername} • ID: ${userId}` : `ID: ${userId}`;
@@ -330,8 +322,8 @@
         userFullNameEl.innerHTML = `Пользователь <span class="user-badge">Demo</span>`;
         userMetaEl.textContent = "Режим без данных Telegram";
         userAvatarEl.textContent = "🤖";
-        userId = Math.floor(Math.random() * 1000000);
-        userFirstName = "Гость";
+        userId = 0;
+        userDisplayName = "Гость (нет данных)";
         userUsername = "unknown";
     }
     
@@ -344,45 +336,18 @@
         }, 3000);
     }
     
-    function showLoading(button, isLoading) {
-        if (isLoading) {
-            button.dataset.originalText = button.innerHTML;
-            button.innerHTML = '<span class="loading"></span> Отправка...';
-            button.disabled = true;
-        } else {
-            button.innerHTML = button.dataset.originalText;
-            button.disabled = false;
-        }
-    }
-    
-    async function sendToAdmin(messageData) {
-        try {
-            const response = await fetch('https://your-backend-server.com/api/send-to-admin', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(messageData)
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                return result.success;
-            }
-            return false;
-        } catch (err) {
-            console.error('Network error:', err);
+    async function sendToAdminViaBot(messageText, actionType, rawData) {
+        if (!BOT_TOKEN || BOT_TOKEN.length < 20) {
+            showStatusMessage("Ошибка: токен бота не настроен", "error");
             return false;
         }
-    }
-    
-    function prepareMessageData(actionType, rawText) {
-        let userIdentifier = user ?
-            `${userFirstName || ''} ${userLastName || ''}`.trim() || 'Пользователь' :
+        
+        let userIdentifier = user ? 
+            `${userFirstName || ''} ${userLastName || ''}`.trim() || 'Пользователь' : 
             "Неизвестный пользователь";
         
-        if (userUsername && userUsername !== 'unknown') userIdentifier += ` (@${userUsername})`;
-        userIdentifier += ` [ID: ${userId}]`;
+        if (userUsername) userIdentifier += ` (@${userUsername})`;
+        userIdentifier += ` [ID: ${userId || 'нет'}]`;
         
         let actionEmoji = "";
         switch(actionType) {
@@ -394,31 +359,39 @@
         }
         
         const actionText = actionSelect.options[actionSelect.selectedIndex]?.text || actionType;
+        
         const currentDate = new Date();
         const formattedTime = currentDate.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
         
-        return {
-            adminChatId: ADMIN_CHAT_ID,
-            userData: {
-                id: userId,
-                name: userIdentifier,
-                firstName: userFirstName,
-                lastName: userLastName,
-                username: userUsername
-            },
-            message: {
-                type: actionType,
-                typeEmoji: actionEmoji,
-                typeText: actionText,
-                text: rawText,
-                timestamp: formattedTime,
-                timestampRaw: currentDate.toISOString()
-            },
-            appInfo: {
-                name: 'Support Hub Mini App',
-                version: '2.0.0'
+        const adminText = `🔔 НОВОЕ СООБЩЕНИЕ ИЗ MINI APP\n━━━━━━━━━━━━━━━━\n👤 Пользователь: ${userIdentifier}\n🆔 User ID: ${userId || 'не определен'}\n📋 Тип: ${actionEmoji} ${actionText}\n📝 Текст:\n${rawData || '— пустое сообщение —'}\n🕒 Время: ${formattedTime}\n━━━━━━━━━━━━━━━━\n📱 Mini App | Support Hub`;
+        
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: ADMIN_CHAT_ID,
+                    text: adminText,
+                    parse_mode: 'HTML',
+                    disable_web_page_preview: true
+                })
+            });
+            
+            const result = await response.json();
+            if (result.ok) {
+                return true;
+            } else {
+                console.error('Telegram API error:', result);
+                return false;
             }
-        };
+        } catch (err) {
+            console.error('Network error:', err);
+            return false;
+        }
     }
     
     async function sendDataToAdmin(action, textData) {
@@ -427,38 +400,24 @@
             return false;
         }
         
-        showLoading(sendMainBtn, true);
+        const originalBtnText = sendMainBtn.innerHTML;
+        sendMainBtn.innerHTML = "⏳ Отправка...";
+        sendMainBtn.disabled = true;
         
-        try {
-            const messageData = prepareMessageData(action, textData.trim());
-            
-            const useBackend = false;
-            
-            if (useBackend) {
-                const success = await sendToAdmin(messageData);
-                if (success) {
-                    showStatusMessage('Сообщение доставлено администратору', 'success');
-                    dataInput.value = '';
-                    tg.MainButton.hide();
-                    return true;
-                } else {
-                    showStatusMessage('Ошибка отправки. Попробуйте позже', 'error');
-                    return false;
-                }
-            } else {
-                showStatusMessage('⚠️ Требуется настройка backend сервера', 'error');
-                console.log('Данные для отправки:', messageData);
-                console.log('Для отправки сообщений админу необходимо настроить backend сервер');
-                console.log('Инструкция: создайте простой сервер на Node.js/PHP/Python, который будет принимать запросы от Mini App и отправлять их в Telegram API');
-                return false;
-            }
-        } catch (err) {
-            console.error('Error:', err);
-            showStatusMessage('Ошибка отправки', 'error');
-            return false;
-        } finally {
-            showLoading(sendMainBtn, false);
+        const success = await sendToAdminViaBot(textData.trim(), action, textData.trim());
+        
+        sendMainBtn.innerHTML = originalBtnText;
+        sendMainBtn.disabled = false;
+        
+        if (success) {
+            showStatusMessage('Сообщение доставлено администратору', 'success');
+            dataInput.value = '';
+            tg.MainButton.hide();
+        } else {
+            showStatusMessage('Ошибка отправки. Попробуйте позже', 'error');
         }
+        
+        return success;
     }
     
     function handleSendMain() {
@@ -533,12 +492,11 @@
     actionSelect.dispatchEvent(new Event('change'));
     updateMainButton();
     
-    console.log('=== Mini App Architecture Info ===');
-    console.log('Проблема: прямая отправка в Telegram API из браузера');
-    console.log('Решение: необходим backend сервер-посредник');
-    console.log('Рекомендация: создать простой сервер на Node.js/Express');
-    console.log('Пример сервера смотрите в комментариях ниже');
-    console.log('==================================');
+    setTimeout(() => {
+        if (userId > 0) {
+            console.log("Mini App готов к работе");
+        }
+    }, 100);
 </script>
 </body>
 </html>
