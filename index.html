@@ -2,236 +2,542 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Support Hub | Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2c2c54);
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgba(30,30,47,1) 0%, rgba(20,20,35,1) 100%);
+            color: #f0f0f0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 16px;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
-            padding: 16px;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 26px;
-        }
-
+        /* Glassmorphic card style */
         .card {
-            backdrop-filter: blur(12px);
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(22, 22, 35, 0.7);
+            backdrop-filter: blur(14px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
         }
 
-        .user-info {
-            text-align: center;
-            padding: 16px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: #fff;
+        .user-header {
+            background: linear-gradient(125deg, #2b2b4f, #1e1e3a);
+            border-radius: 32px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid rgba(255,255,240,0.08);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(145deg, #6c5ce7, #a463f5);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .user-badge {
+            background: rgba(108, 92, 231, 0.7);
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 30px;
             font-weight: 500;
         }
 
+        .user-tag {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .input-group {
-            margin-bottom: 14px;
+            margin-bottom: 18px;
         }
 
         label {
-            display: block;
-            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 14px;
-            opacity: 0.8;
+            font-weight: 500;
+            margin-bottom: 8px;
+            opacity: 0.85;
         }
 
         select, textarea {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            outline: none;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(10, 10, 20, 0.6);
+            color: white;
             font-size: 15px;
-            background: rgba(255,255,255,0.08);
-            color: #fff;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        select:focus, textarea:focus {
+            border-color: #8c7cf0;
+            background: rgba(20, 20, 40, 0.8);
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
         }
 
         textarea::placeholder {
-            color: rgba(255,255,255,0.5);
+            color: rgba(200,200,230,0.5);
         }
 
         .button {
             width: 100%;
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
             border: none;
-            font-size: 15px;
             cursor: pointer;
             transition: 0.2s;
             margin-top: 8px;
-        }
-
-        .primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-        }
-
-        .secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background: rgba(255,255,255,0.08);
             color: #fff;
         }
 
-        .button:hover {
-            transform: scale(0.98);
+        .primary-btn {
+            background: linear-gradient(95deg, #6c5ce7, #a463f5);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+        .primary-btn:active {
+            transform: scale(0.97);
             opacity: 0.9;
         }
 
+        .secondary-btn {
+            background: rgba(255,255,255,0.07);
+            border: 0.5px solid rgba(255,255,255,0.15);
+        }
+
+        .secondary-btn:active {
+            background: rgba(255,255,255,0.15);
+        }
+
         .status {
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 10px;
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 40px;
             text-align: center;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
             display: none;
+            font-size: 14px;
         }
 
         .success {
-            background: #2ecc71;
+            background: rgba(46, 204, 113, 0.85);
+            color: white;
         }
 
         .error {
-            background: #e74c3c;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+        }
+
+        .info-note {
+            font-size: 12px;
+            text-align: center;
+            opacity: 0.6;
+            margin-top: 14px;
+        }
+
+        hr {
+            margin: 12px 0;
+            border-color: rgba(255,255,255,0.08);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .badge-icon {
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🚀 Mini App</h1>
+    <!-- Профиль пользователя -->
+    <div class="user-header" id="userInfoBlock">
+        <div class="avatar" id="userAvatar">👤</div>
+        <div class="user-details">
+            <div class="user-name" id="userFullName">Загрузка...</div>
+            <div class="user-tag" id="userMeta">Инициализация</div>
+        </div>
+    </div>
 
-    <div class="user-info" id="userInfo">Загрузка...</div>
-
+    <!-- Главная карточка обратной связи -->
     <div class="card">
+        <h2>
+            <span>📬</span> Связаться с поддержкой
+        </h2>
         <div class="input-group">
-            <label>Действие</label>
+            <label>📌 Тип обращения</label>
             <select id="actionSelect">
-                <option value="message">Сообщение</option>
-                <option value="feedback">Отзыв</option>
-                <option value="contact">Контакты</option>
+                <option value="message">💬 Общее сообщение</option>
+                <option value="feedback">⭐ Отзыв / предложение</option>
+                <option value="contact">📞 Запрос контакта</option>
+                <option value="bug">🐞 Сообщить об ошибке</option>
             </select>
         </div>
 
         <div class="input-group">
-            <label>Данные</label>
-            <textarea id="dataInput" placeholder="Введите текст..."></textarea>
+            <label>✍️ Текст сообщения</label>
+            <textarea id="dataInput" placeholder="Напишите детали обращения... (минимум 2 символа)"></textarea>
         </div>
 
-        <button class="button primary" onclick="sendData()">📤 Отправить</button>
-        <button class="button secondary" onclick="sendSimpleMessage()">📝 Быстрое сообщение</button>
+        <button class="button primary-btn" id="sendMainBtn">
+            ✨ Отправить администратору
+        </button>
+
+        <div class="quick-actions">
+            <button class="button secondary-btn" id="quickMessageBtn" style="flex:1">
+                📨 Приветственное
+            </button>
+            <button class="button secondary-btn" id="quickFeedbackBtn" style="flex:1">
+                👍 Отличный апп
+            </button>
+        </div>
     </div>
 
+    <!-- Карточка закрытия -->
     <div class="card">
-        <button class="button secondary" onclick="closeApp()">❌ Закрыть</button>
+        <button class="button secondary-btn" id="closeAppBtn">
+            🔒 Закрыть приложение
+        </button>
+        <div class="info-note">
+            Все обращения приходят напрямую администратору
+        </div>
     </div>
 
-    <div id="status" class="status"></div>
+    <div id="statusToast" class="status"></div>
 </div>
 
 <script>
+    // ======================= КОНФИГУРАЦИЯ =======================
+    const ADMIN_CHAT_ID = 6996135336;   // Айди администратора (личный чат)
+    const BOT_TOKEN = "8123260102:AAFYvARmM-9_m-mQcTlwj-tuGHg06UJRagE";   // ТОКЕН БОТА (переместите в безопасное место при продвижении)
+    // ===========================================================
+    
     const tg = window.Telegram.WebApp;
-
     tg.ready();
-    tg.expand();
-
-    const user = tg.initDataUnsafe?.user;
-
-    const userInfo = document.getElementById('userInfo');
-
+    tg.expand();          // На весь экран
+    
+    // Получаем данные пользователя Telegram
+    const user = tg.initDataUnsafe?.user || null;
+    
+    // Элементы DOM
+    const userFullNameEl = document.getElementById('userFullName');
+    const userMetaEl = document.getElementById('userMeta');
+    const userAvatarEl = document.getElementById('userAvatar');
+    const actionSelect = document.getElementById('actionSelect');
+    const dataInput = document.getElementById('dataInput');
+    const statusDiv = document.getElementById('statusToast');
+    const sendMainBtn = document.getElementById('sendMainBtn');
+    const quickMessageBtn = document.getElementById('quickMessageBtn');
+    const quickFeedbackBtn = document.getElementById('quickFeedbackBtn');
+    const closeAppBtn = document.getElementById('closeAppBtn');
+    
+    // Формируем данные о пользователе для отображения и логов
+    let userDisplayName = "Гость";
+    let userTagText = "";
+    let userAvatarInitial = "👤";
+    let userFirstName = "";
+    let userLastName = "";
+    let userUsername = "";
+    let userId = 0;
+    
     if (user) {
-        userInfo.innerHTML = `
-            ${user.first_name} ${user.last_name || ''}<br>
-            @${user.username || '—'}<br>
-            ID: ${user.id}
-        `;
+        userId = user.id || 0;
+        userFirstName = user.first_name || "";
+        userLastName = user.last_name || "";
+        userUsername = user.username || "";
+        userDisplayName = `${userFirstName} ${userLastName}`.trim() || "Пользователь";
+        if (userFirstName) userAvatarInitial = userFirstName.charAt(0).toUpperCase();
+        userTagText = userUsername ? `@${userUsername} • ID: ${userId}` : `ID: ${userId}`;
+        userFullNameEl.innerHTML = `${userDisplayName} <span class="user-badge">TG user</span>`;
+        userMetaEl.textContent = userTagText;
+        userAvatarEl.textContent = userAvatarInitial;
     } else {
-        userInfo.textContent = 'Нет данных пользователя';
+        // Для случаев, если Mini App открыт вне Telegram (WebApp тест)
+        userFullNameEl.innerHTML = `Пользователь <span class="user-badge">Demo</span>`;
+        userMetaEl.textContent = "Режим без данных Telegram";
+        userAvatarEl.textContent = "🤖";
+        userId = 0;
+        userDisplayName = "Гость (нет auth)";
+        userUsername = "unknown";
     }
-
-    function sendData() {
-        const action = document.getElementById('actionSelect').value;
-        const data = document.getElementById('dataInput').value;
-
-        if (!data) {
-            showStatus('Введите текст', 'error');
+    
+    // Вспомогательная функция: показать уведомление в приложении
+    function showStatusMessage(text, type = 'success') {
+        statusDiv.textContent = text;
+        statusDiv.className = `status ${type}`;
+        statusDiv.style.display = 'block';
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 2800);
+    }
+    
+    // Функция отправки сообщения администратору через Telegram Bot API
+    async function sendToAdminViaBot(messageText, actionType, rawData) {
+        if (!BOT_TOKEN || BOT_TOKEN === "YOUR_BOT_TOKEN_HERE") {
+            console.error("Токен бота не настроен");
+            showStatusMessage("⚠️ Ошибка: токен бота отсутствует", "error");
+            return false;
+        }
+        
+        // Формируем красивое сообщение для админа
+        let userIdentifier = user ? 
+            `${userFirstName || ''} ${userLastName || ''} (@${userUsername || 'no_username'}) [ID: ${userId}]` : 
+            `Неизвестный пользователь (нет данных)`;
+        
+        let actionEmoji = "";
+        switch(actionType) {
+            case "message": actionEmoji = "💬"; break;
+            case "feedback": actionEmoji = "⭐"; break;
+            case "contact": actionEmoji = "📞"; break;
+            case "bug": actionEmoji = "🐞"; break;
+            default: actionEmoji = "📝";
+        }
+        
+        const currentDate = new Date();
+        const formattedTime = currentDate.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+        
+        const adminText = `
+🔔 <b>НОВОЕ СООБЩЕНИЕ ИЗ MINI APP</b>
+━━━━━━━━━━━━━━━━
+👤 <b>Пользователь:</b> ${userIdentifier}
+🆔 <b>User ID:</b> ${userId || 'не определен'}
+📋 <b>Тип:</b> ${actionEmoji} ${actionSelect.options[actionSelect.selectedIndex]?.text || actionType}
+📝 <b>Текст:</b>
+${rawData || '— пустое сообщение —'}
+🕒 <b>Время:</b> ${formattedTime}
+━━━━━━━━━━━━━━━━
+📱 <b>Mini App | Support Hub</b>
+        `.trim();
+        
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: ADMIN_CHAT_ID,
+                    text: adminText,
+                    parse_mode: 'HTML',
+                    disable_web_page_preview: true
+                })
+            });
+            
+            const result = await response.json();
+            if (result.ok) {
+                console.log('Успешно отправлено админу');
+                return true;
+            } else {
+                console.error('Ошибка Telegram API:', result);
+                return false;
+            }
+        } catch (err) {
+            console.error('Ошибка сети при отправке:', err);
+            return false;
+        }
+    }
+    
+    // Основная функция отправки данных (использует прямое API бота)
+    async function sendDataToAdmin(action, textData) {
+        if (!textData || textData.trim().length < 2) {
+            showStatusMessage('❗ Введите текст (минимум 2 символа)', 'error');
+            return false;
+        }
+        
+        // Показываем индикацию отправки
+        const originalBtnText = sendMainBtn.innerHTML;
+        sendMainBtn.innerHTML = "⏳ Отправка...";
+        sendMainBtn.disabled = true;
+        
+        const success = await sendToAdminViaBot(textData.trim(), action, textData.trim());
+        
+        sendMainBtn.innerHTML = originalBtnText;
+        sendMainBtn.disabled = false;
+        
+        if (success) {
+            showStatusMessage('✅ Сообщение доставлено администратору', 'success');
+            dataInput.value = '';      // очищаем поле
+            // Скрываем главную кнопку Telegram (если используется MainButton)
+            tg.MainButton.hide();
+        } else {
+            showStatusMessage('❌ Ошибка отправки. Попробуйте позже', 'error');
+        }
+        
+        return success;
+    }
+    
+    // Обработчик кнопки "Отправить администратору"
+    function handleSendMain() {
+        const selectedAction = actionSelect.value;
+        const rawText = dataInput.value;
+        if (!rawText.trim()) {
+            showStatusMessage('Напишите текст сообщения', 'error');
             return;
         }
-
-        const payload = {
-            userId: user?.id || 0,
-            username: user?.username || null,
-            action,
-            data
-        };
-
-        tg.sendData(JSON.stringify(payload));
-        showStatus('Отправлено', 'success');
-        document.getElementById('dataInput').value = '';
+        sendDataToAdmin(selectedAction, rawText);
     }
-
-    function sendSimpleMessage() {
-        const payload = {
-            userId: user?.id || 0,
-            username: user?.username || null,
-            action: 'simple',
-            data: 'Привет из Mini App'
-        };
-
-        tg.sendData(JSON.stringify(payload));
-        showStatus('Отправлено', 'success');
+    
+    // Быстрое сообщение "Приветственное"
+    function handleQuickMessage() {
+        const quickText = `👋 Привет! Это тестовое сообщение из Mini App. Всё работает отлично!`;
+        dataInput.value = quickText;
+        sendDataToAdmin('message', quickText);
     }
-
-    function closeApp() {
+    
+    // Быстрый отзыв "Отличный апп"
+    function handleQuickFeedback() {
+        const feedbackText = `🔥 Отличный дизайн и удобство! Пользователь оценивает Mini App на 10/10. Спасибо!`;
+        dataInput.value = feedbackText;
+        sendDataToAdmin('feedback', feedbackText);
+    }
+    
+    // Закрыть приложение
+    function handleCloseApp() {
         tg.close();
     }
-
-    function showStatus(text, type) {
-        const el = document.getElementById('status');
-        el.textContent = text;
-        el.className = 'status ' + type;
-        el.style.display = 'block';
-
-        setTimeout(() => {
-            el.style.display = 'none';
-        }, 2500);
+    
+    // Управление MainButton Telegram (кастомная интеграция)
+    // Показываем/скрываем в зависимости от ввода текста
+    function updateMainButton() {
+        const hasText = dataInput.value.trim().length > 0;
+        if (hasText) {
+            tg.MainButton.setText("📨 Отправить админу");
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.hide();
+        }
     }
-
-    tg.MainButton.setText('Отправить');
-    tg.MainButton.onClick(sendData);
-
-    document.getElementById('dataInput').addEventListener('input', function () {
-        this.value ? tg.MainButton.show() : tg.MainButton.hide();
+    
+    // Инициализация событий
+    sendMainBtn.addEventListener('click', handleSendMain);
+    quickMessageBtn.addEventListener('click', handleQuickMessage);
+    quickFeedbackBtn.addEventListener('click', handleQuickFeedback);
+    closeAppBtn.addEventListener('click', handleCloseApp);
+    dataInput.addEventListener('input', updateMainButton);
+    
+    // Подключаем MainButton Telegram
+    tg.MainButton.onClick(() => {
+        const selectedAction = actionSelect.value;
+        const rawText = dataInput.value;
+        if (!rawText.trim()) {
+            showStatusMessage('Напишите текст перед отправкой', 'error');
+            return;
+        }
+        sendDataToAdmin(selectedAction, rawText);
     });
+    
+    // Дополнительно для удобства: если нажали Enter в textarea (Ctrl+Enter) - отправить
+    dataInput.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            handleSendMain();
+        }
+    });
+    
+    // Для декорации, если переключили тип действия — можно оставить подсказку
+    actionSelect.addEventListener('change', () => {
+        const val = actionSelect.value;
+        let hint = "";
+        if (val === "bug") hint = "🐞 Опишите ошибку подробнее: как воспроизвести?";
+        else if (val === "feedback") hint = "✍️ Ваше мнение очень важно для нас!";
+        else if (val === "contact") hint = "📞 Оставьте свой Telegram или номер для связи";
+        else hint = "💬 Напишите любое сообщение администратору";
+        dataInput.placeholder = hint;
+    });
+    // Триггер изменения плейсхолдера
+    actionSelect.dispatchEvent(new Event('change'));
+    
+    // Устанавливаем начальное состояние MainButton
+    updateMainButton();
+    
+    // Приветственный статус (необязательно)
+    setTimeout(() => {
+        showStatusMessage("✨ Связь с администратором защищена", "success");
+    }, 600);
+    
+    // Для безопасности выведем в консоль что Mini App готов к отправке админу
+    console.log(`Mini App готов. Admin ID: ${ADMIN_CHAT_ID}, User: ${userId}`);
 </script>
 </body>
 </html>
