@@ -258,7 +258,7 @@
         <button class="button primary-btn" id="sendMainBtn">
             ✨ Отправить администратору
         </button>
-        
+
         <div class="quick-actions">
             <button class="button secondary-btn" id="quickMessageBtn" style="flex:1">
                 📨 Приветственное
@@ -283,14 +283,14 @@
 
 <script>
     const ADMIN_CHAT_ID = 6996135336;
-    const BOT_TOKEN = "8123260102:AAFYvARmM-9_m-mQcTlwj-tuGHg06UJRagE";
-    
+    const BOT_TOKEN = "7974919589:AAEXpQ40DBA6hTx84ZdfgSFwS57-4Egzpos";
+
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    
+
     const user = tg.initDataUnsafe?.user || null;
-    
+
     const userFullNameEl = document.getElementById('userFullName');
     const userMetaEl = document.getElementById('userMeta');
     const userAvatarEl = document.getElementById('userAvatar');
@@ -301,13 +301,13 @@
     const quickMessageBtn = document.getElementById('quickMessageBtn');
     const quickFeedbackBtn = document.getElementById('quickFeedbackBtn');
     const closeAppBtn = document.getElementById('closeAppBtn');
-    
+
     let userId = 0;
     let userFirstName = "";
     let userLastName = "";
     let userUsername = "";
     let userDisplayName = "Гость";
-    
+
     if (user) {
         userId = user.id || 0;
         userFirstName = user.first_name || "";
@@ -326,7 +326,7 @@
         userDisplayName = "Гость (нет данных)";
         userUsername = "unknown";
     }
-    
+
     function showStatusMessage(text, type = 'success') {
         statusDiv.textContent = text;
         statusDiv.className = `status ${type}`;
@@ -335,20 +335,20 @@
             statusDiv.style.display = 'none';
         }, 3000);
     }
-    
+
     async function sendToAdminViaBot(messageText, actionType, rawData) {
         if (!BOT_TOKEN || BOT_TOKEN.length < 20) {
             showStatusMessage("Ошибка: токен бота не настроен", "error");
             return false;
         }
-        
-        let userIdentifier = user ? 
-            `${userFirstName || ''} ${userLastName || ''}`.trim() || 'Пользователь' : 
+
+        let userIdentifier = user ?
+            `${userFirstName || ''} ${userLastName || ''}`.trim() || 'Пользователь' :
             "Неизвестный пользователь";
-        
+
         if (userUsername) userIdentifier += ` (@${userUsername})`;
         userIdentifier += ` [ID: ${userId || 'нет'}]`;
-        
+
         let actionEmoji = "";
         switch(actionType) {
             case "message": actionEmoji = "💬"; break;
@@ -357,16 +357,16 @@
             case "bug": actionEmoji = "🐞"; break;
             default: actionEmoji = "📝";
         }
-        
+
         const actionText = actionSelect.options[actionSelect.selectedIndex]?.text || actionType;
-        
+
         const currentDate = new Date();
         const formattedTime = currentDate.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
-        
+
         const adminText = `🔔 НОВОЕ СООБЩЕНИЕ ИЗ MINI APP\n━━━━━━━━━━━━━━━━\n👤 Пользователь: ${userIdentifier}\n🆔 User ID: ${userId || 'не определен'}\n📋 Тип: ${actionEmoji} ${actionText}\n📝 Текст:\n${rawData || '— пустое сообщение —'}\n🕒 Время: ${formattedTime}\n━━━━━━━━━━━━━━━━\n📱 Mini App | Support Hub`;
-        
+
         const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-        
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -380,7 +380,7 @@
                     disable_web_page_preview: true
                 })
             });
-            
+
             const result = await response.json();
             if (result.ok) {
                 return true;
@@ -393,22 +393,22 @@
             return false;
         }
     }
-    
+
     async function sendDataToAdmin(action, textData) {
         if (!textData || textData.trim().length === 0) {
             showStatusMessage('Введите текст сообщения', 'error');
             return false;
         }
-        
+
         const originalBtnText = sendMainBtn.innerHTML;
         sendMainBtn.innerHTML = "⏳ Отправка...";
         sendMainBtn.disabled = true;
-        
+
         const success = await sendToAdminViaBot(textData.trim(), action, textData.trim());
-        
+
         sendMainBtn.innerHTML = originalBtnText;
         sendMainBtn.disabled = false;
-        
+
         if (success) {
             showStatusMessage('Сообщение доставлено администратору', 'success');
             dataInput.value = '';
@@ -416,10 +416,10 @@
         } else {
             showStatusMessage('Ошибка отправки. Попробуйте позже', 'error');
         }
-        
+
         return success;
     }
-    
+
     function handleSendMain() {
         const selectedAction = actionSelect.value;
         const rawText = dataInput.value;
@@ -429,23 +429,23 @@
         }
         sendDataToAdmin(selectedAction, rawText);
     }
-    
+
     function handleQuickMessage() {
         const quickText = `👋 Привет! Это тестовое сообщение из Mini App. Всё работает отлично!`;
         dataInput.value = quickText;
         sendDataToAdmin('message', quickText);
     }
-    
+
     function handleQuickFeedback() {
         const feedbackText = `🔥 Отличный дизайн и удобство! Пользователь оценивает Mini App на 10/10. Спасибо!`;
         dataInput.value = feedbackText;
         sendDataToAdmin('feedback', feedbackText);
     }
-    
+
     function handleCloseApp() {
         tg.close();
     }
-    
+
     function updateMainButton() {
         const hasText = dataInput.value.trim().length > 0;
         if (hasText) {
@@ -455,13 +455,13 @@
             tg.MainButton.hide();
         }
     }
-    
+
     sendMainBtn.addEventListener('click', handleSendMain);
     quickMessageBtn.addEventListener('click', handleQuickMessage);
     quickFeedbackBtn.addEventListener('click', handleQuickFeedback);
     closeAppBtn.addEventListener('click', handleCloseApp);
     dataInput.addEventListener('input', updateMainButton);
-    
+
     tg.MainButton.onClick(() => {
         const selectedAction = actionSelect.value;
         const rawText = dataInput.value;
@@ -471,14 +471,14 @@
         }
         sendDataToAdmin(selectedAction, rawText);
     });
-    
+
     dataInput.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             e.preventDefault();
             handleSendMain();
         }
     });
-    
+
     actionSelect.addEventListener('change', () => {
         const val = actionSelect.value;
         let hint = "";
@@ -488,10 +488,10 @@
         else hint = "Напишите любое сообщение администратору";
         dataInput.placeholder = hint;
     });
-    
+
     actionSelect.dispatchEvent(new Event('change'));
     updateMainButton();
-    
+
     setTimeout(() => {
         if (userId > 0) {
             console.log("Mini App готов к работе");
