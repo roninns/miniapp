@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 16px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        .card {
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .user-info {
+            text-align: center;
+            padding: 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        textarea::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+
+        .primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+
+        .secondary {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        .button:hover {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .status {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background: #2ecc71;
+        }
+
+        .error {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🚀 Mini App</h1>
+
+    <div class="user-info" id="userInfo">Загрузка...</div>
+
+    <div class="card">
+        <div class="input-group">
+            <label>Действие</label>
+            <select id="actionSelect">
+                <option value="message">Сообщение</option>
+                <option value="feedback">Отзыв</option>
+                <option value="contact">Контакты</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Данные</label>
+            <textarea id="dataInput" placeholder="Введите текст..."></textarea>
+        </div>
+
+        <button class="button primary" onclick="sendData()">📤 Отправить</button>
+        <button class="button secondary" onclick="sendSimpleMessage()">📝 Быстрое сообщение</button>
+    </div>
+
+    <div class="card">
+        <button class="button secondary" onclick="closeApp()">❌ Закрыть</button>
+    </div>
+
+    <div id="status" class="status"></div>
+</div>
+
+<script>
+    const tg = window.Telegram.WebApp;
+
+    tg.ready();
+    tg.expand();
+
+    const user = tg.initDataUnsafe?.user;
+
+    const userInfo = document.getElementById('userInfo');
+
+    if (user) {
+        userInfo.innerHTML = `
+            ${user.first_name} ${user.last_name || ''}<br>
+            @${user.username || '—'}<br>
+            ID: ${user.id}
+        `;
+    } else {
+        userInfo.textContent = 'Нет данных пользователя';
+    }
+
+    function sendData() {
+        const action = document.getElementById('actionSelect').value;
+        const data = document.getElementById('dataInput').value;
+
+        if (!data) {
+            showStatus('Введите текст', 'error');
+            return;
+        }
+
+        const payload = {
+            userId: user?.id || 0,
+            username: user?.username || null,
+            action,
+            data
+        };
+
+        tg.sendData(JSON.stringify(payload));
+        showStatus('Отправлено', 'success');
+        document.getElementById('dataInput').value = '';
+    }
+
+    function sendSimpleMessage() {
+        const payload = {
+            userId: user?.id || 0,
+            username: user?.username || null,
+            action: 'simple',
+            data: 'Привет из Mini App'
+        };
+
+        tg.sendData(JSON.stringify(payload));
+        showStatus('Отправлено', 'success');
+    }
+
+    function closeApp() {
+        tg.close();
+    }
+
+    function showStatus(text, type) {
+        const el = document.getElementById('status');
+        el.textContent = text;
+        el.className = 'status ' + type;
+        el.style.display = 'block';
+
+        setTimeout(() => {
+            el.style.display = 'none';
+        }, 2500);
+    }
+
+    tg.MainButton.setText('Отправить');
+    tg.MainButton.onClick(sendData);
+
+    document.getElementById('dataInput').addEventListener('input', function () {
+        this.value ? tg.MainButton.show() : tg.MainButton.hide();
+    });
+</script>
+</body>
+</html>
