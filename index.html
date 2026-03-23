@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Support Hub | Mini App</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GiftMarket | TON NFT Marketplace</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.4.1/dist/tonconnect-ui.min.js"></script>
+  <style>
         * {
             margin: 0;
             padding: 0;
@@ -13,490 +15,1146 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        :root {
+            --bg-primary: #0a0c15;
+            --bg-secondary: #11141f;
+            --card-bg: rgba(22, 26, 40, 0.9);
+            --accent: #5e7aff;
+            --accent-glow: rgba(94, 122, 255, 0.4);
+            --gold: #ffd966;
+            --green: #34d87a;
+            --red: #ff5e5e;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            background: radial-gradient(circle at 10% 20%, #1a1a2e 0%, #16213e 100%);
-            color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
         }
 
         .container {
-            width: 100%;
             max-width: 480px;
             margin: 0 auto;
+            padding: 16px 16px 80px;
         }
 
-        .card {
-            background: rgba(25, 25, 45, 0.85);
-            backdrop-filter: blur(14px);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .user-header {
-            background: linear-gradient(125deg, #2d2b55, #1e1a3a);
-            border-radius: 32px;
-            padding: 18px 20px;
-            margin-bottom: 20px;
+        /* Header */
+        .header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            border: 1px solid rgba(255,255,240,0.1);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding: 12px 0;
         }
 
-        .avatar {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(145deg, #5f4dee, #9b6dff);
-            border-radius: 32px;
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .wallet-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wallet-btn:active {
+            transform: scale(0.96);
+        }
+
+        .wallet-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .wallet-address {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(94, 122, 255, 0.15), rgba(94, 122, 255, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .balance-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .balance-value {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .balance-value .amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .balance-value .currency {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #4a6bd4);
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            border-radius: 40px;
+            padding: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 36px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Grids */
+        .gifts-grid, .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .gift-card, .inventory-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .gift-card:active, .inventory-item:active {
+            transform: scale(0.98);
+        }
+
+        .gift-visual, .inv-item-visual {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 12px;
+            overflow: hidden;
         }
 
-        .user-details {
-            flex: 1;
+        .gift-img, .inv-item-img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
         }
 
-        .user-name {
-            font-size: 18px;
+        .gift-name, .inv-item-name {
+            font-size: 14px;
             font-weight: 600;
-            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .gift-price {
             display: flex;
-            align-items: baseline;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
             gap: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold);
         }
 
-        .user-badge {
-            background: rgba(95, 77, 238, 0.7);
-            font-size: 10px;
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-weight: 500;
+        .inventory-item .sell-badge {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
-        .user-tag {
-            font-size: 13px;
-            opacity: 0.7;
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 360px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .modal-gift-image {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin: 0 auto 16px;
+            display: block;
+        }
+
+        .modal-price {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Exchange Orders */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .order-user {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .order-status {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: rgba(52, 216, 122, 0.2);
+            color: var(--green);
+        }
+
+        .order-items {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .order-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+
+        .order-item-name {
+            font-size: 12px;
+            font-weight: 600;
             margin-top: 4px;
         }
 
-        h2 {
+        .order-arrow {
             font-size: 20px;
+            color: var(--accent);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 20px;
+        }
+
+        /* Form */
+        .form-group {
             margin-bottom: 16px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .input-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            opacity: 0.85;
+        .form-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: block;
         }
 
         select, textarea {
             width: 100%;
-            padding: 14px 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(10, 10, 25, 0.7);
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             color: white;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        select:focus, textarea:focus {
-            border-color: #9b6dff;
-            background: rgba(20, 20, 45, 0.9);
-        }
-
-        textarea {
-            min-height: 110px;
-            resize: vertical;
-        }
-
-        textarea::placeholder {
-            color: rgba(200,200,230,0.5);
-        }
-
-        .button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.08);
-            color: #fff;
-        }
-
-        .primary-btn {
-            background: linear-gradient(95deg, #5f4dee, #9b6dff);
-            box-shadow: 0 4px 12px rgba(95, 77, 238, 0.4);
-        }
-
-        .primary-btn:active {
-            transform: scale(0.97);
-            opacity: 0.9;
-        }
-
-        .secondary-btn {
-            background: rgba(255,255,255,0.07);
-            border: 0.5px solid rgba(255,255,255,0.18);
-        }
-
-        .secondary-btn:active {
-            background: rgba(255,255,255,0.18);
-        }
-
-        .status {
-            margin-top: 16px;
-            padding: 12px 16px;
-            border-radius: 40px;
-            text-align: center;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-            display: none;
             font-size: 14px;
         }
 
-        .success {
-            background: rgba(46, 204, 113, 0.9);
-            color: white;
-        }
-
-        .error {
-            background: rgba(231, 76, 60, 0.95);
-            color: white;
-        }
-
-        .info-note {
-            font-size: 12px;
+        /* Loading */
+        .loading {
             text-align: center;
-            opacity: 0.6;
-            margin-top: 14px;
+            padding: 40px;
+            color: var(--text-secondary);
         }
 
-        .quick-actions {
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            padding: 8px 16px;
+            z-index: 100;
+        }
+
+        .nav-inner {
             display: flex;
-            gap: 12px;
-            margin-top: 8px;
+            justify-content: space-around;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        .badge-icon {
-            font-size: 20px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            transition: all 0.2s;
+            padding: 8px;
         }
 
-        button:disabled {
-            opacity: 0.5;
-            transform: none;
-            cursor: not-allowed;
+        .nav-item.active {
+            color: var(--accent);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="user-header" id="userInfoBlock">
-        <div class="avatar" id="userAvatar">👤</div>
-        <div class="user-details">
-            <div class="user-name" id="userFullName">Загрузка...</div>
-            <div class="user-tag" id="userMeta">Инициализация</div>
-        </div>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">🎁 GiftMarket</div>
+    <div class="wallet-btn" id="walletBtn">
+      <img class="wallet-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 12a2 2 0 0 0-2-2h-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4h2a2 2 0 0 0 2-2z'/%3E%3C/svg%3E">
+      <span class="wallet-address" id="walletAddress">Connect Wallet</span>
     </div>
+  </div>
 
-    <div class="card">
-        <h2>
-            <span>📬</span> Связаться с поддержкой
-        </h2>
-        <div class="input-group">
-            <label>📌 Тип обращения</label>
-            <select id="actionSelect">
-                <option value="message">💬 Общее сообщение</option>
-                <option value="feedback">⭐ Отзыв / предложение</option>
-                <option value="contact">📞 Запрос контакта</option>
-                <option value="bug">🐞 Сообщить об ошибке</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>✍️ Текст сообщения</label>
-            <textarea id="dataInput" placeholder="Напишите детали обращения..."></textarea>
-        </div>
-
-        <button class="button primary-btn" id="sendMainBtn">
-            ✨ Отправить администратору
-        </button>
-
-        <div class="quick-actions">
-            <button class="button secondary-btn" id="quickMessageBtn" style="flex:1">
-                📨 Приветственное
-            </button>
-            <button class="button secondary-btn" id="quickFeedbackBtn" style="flex:1">
-                👍 Отличный апп
-            </button>
-        </div>
+  <!-- Balance Card -->
+  <div class="balance-card">
+    <div class="balance-label">TON Balance</div>
+    <div class="balance-value">
+      <span class="amount" id="tonBalance">0.00</span>
+      <span class="currency">TON</span>
     </div>
-
-    <div class="card">
-        <button class="button secondary-btn" id="closeAppBtn">
-            🔒 Закрыть приложение
-        </button>
-        <div class="info-note">
-            Все обращения приходят напрямую администратору
-        </div>
+    <div class="balance-actions">
+      <button class="btn btn-primary" id="depositBtn">Deposit</button>
+      <button class="btn btn-secondary" id="withdrawBtn">Withdraw</button>
     </div>
+  </div>
 
-    <div id="statusToast" class="status"></div>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" data-tab="market">Market</div>
+    <div class="tab" data-tab="inventory">Inventory</div>
+    <div class="tab" data-tab="exchange">Exchange</div>
+  </div>
+
+  <!-- Market Tab -->
+  <div id="marketTab">
+    <div id="giftsGrid" class="gifts-grid">
+      <div class="loading">Loading gifts...</div>
+    </div>
+  </div>
+
+  <!-- Inventory Tab -->
+  <div id="inventoryTab" style="display: none;">
+    <div id="inventoryGrid" class="inventory-grid">
+      <div class="loading">Loading inventory...</div>
+    </div>
+  </div>
+
+  <!-- Exchange Tab -->
+  <div id="exchangeTab" style="display: none;">
+    <button class="btn btn-primary" id="createOrderBtn" style="margin-bottom: 16px;">+ Create Exchange Order</button>
+    <div id="ordersList" class="orders-list">
+      <div class="loading">Loading orders...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-item active" data-page="main">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="#" class="nav-item" data-page="market">
+      <span class="nav-icon">🎁</span>
+      <span>Market</span>
+    </a>
+    <a href="#" class="nav-item" data-page="inventory">
+      <span class="nav-icon">📦</span>
+      <span>Inventory</span>
+    </a>
+    <a href="#" class="nav-item" data-page="exchange">
+      <span class="nav-icon">🔄</span>
+      <span>Exchange</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Buy Modal -->
+<div class="modal-overlay" id="buyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
+    <div class="modal-title" id="buyModalTitle">Buy Gift</div>
+    <img class="modal-gift-image" id="buyModalImage" src="" alt="">
+    <div class="modal-price" id="buyModalPrice"></div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal('buyModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmBuyBtn">Confirm Purchase</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sell Modal -->
+<div class="modal-overlay" id="sellModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('sellModal')">✕</button>
+    <div class="modal-title">Sell Gift</div>
+    <img class="modal-gift-image" id="sellModalImage" src="" alt="">
+    <div class="modal-price" id="sellModalPrice"></div>
+    <div class="form-group">
+      <label class="form-label">Sell Price (TON)</label>
+      <input type="number" id="sellPrice" class="form-group" style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:white;" placeholder="Enter price">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal('sellModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmSellBtn">List for Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Exchange Order Modal -->
+<div class="modal-overlay" id="exchangeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('exchangeModal')">✕</button>
+    <div class="modal-title">Create Exchange Order</div>
+    <div class="form-group">
+      <label class="form-label">Your Gift</label>
+      <select id="offerGiftSelect"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Want to receive</label>
+      <select id="wantGiftSelect"></select>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal('exchangeModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmExchangeBtn">Create Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deposit/Withdraw Modal -->
+<div class="modal-overlay" id="tonModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('tonModal')">✕</button>
+    <div class="modal-title" id="tonModalTitle">Deposit TON</div>
+    <div class="form-group">
+      <label class="form-label">Amount (TON)</label>
+      <input type="number" id="tonAmount" class="form-group" style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:white;" placeholder="0.00">
+    </div>
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal('tonModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmTonBtn">Confirm</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    const ADMIN_CHAT_ID = 7745543955;
-    const BOT_TOKEN = "7974919589:AAEXpQ40DBA6hTx84ZdfgSFwS57-4Egzpos";
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+        let tonConnectUI = null;
+        let currentUser = null;
+        let giftsData = [];
+        let inventoryData = [];
+        let ordersData = [];
+        let currentTab = 'market';
 
-    const user = tg.initDataUnsafe?.user || null;
+        // Initialize TON Connect
+        async function initTonConnect() {
+            try {
+                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                    manifestUrl: 'https://raw.githubusercontent.com/ton-connect/manifest/main/manifest.json',
+                    buttonRootId: null
+                });
 
-    const userFullNameEl = document.getElementById('userFullName');
-    const userMetaEl = document.getElementById('userMeta');
-    const userAvatarEl = document.getElementById('userAvatar');
-    const actionSelect = document.getElementById('actionSelect');
-    const dataInput = document.getElementById('dataInput');
-    const statusDiv = document.getElementById('statusToast');
-    const sendMainBtn = document.getElementById('sendMainBtn');
-    const quickMessageBtn = document.getElementById('quickMessageBtn');
-    const quickFeedbackBtn = document.getElementById('quickFeedbackBtn');
-    const closeAppBtn = document.getElementById('closeAppBtn');
+                if (tonConnectUI) {
+                    const wallet = tonConnectUI.wallet;
+                    if (wallet) {
+                        updateWalletUI(wallet.account.address);
+                    }
 
-    let userId = 0;
-    let userFirstName = "";
-    let userLastName = "";
-    let userUsername = "";
-    let userDisplayName = "Гость";
-
-    if (user) {
-        userId = user.id || 0;
-        userFirstName = user.first_name || "";
-        userLastName = user.last_name || "";
-        userUsername = user.username || "";
-        userDisplayName = `${userFirstName} ${userLastName}`.trim() || "Пользователь";
-        const userAvatarInitial = userFirstName ? userFirstName.charAt(0).toUpperCase() : "👤";
-        userFullNameEl.innerHTML = `${userDisplayName} <span class="user-badge">TG user</span>`;
-        userMetaEl.textContent = userUsername ? `@${userUsername} • ID: ${userId}` : `ID: ${userId}`;
-        userAvatarEl.textContent = userAvatarInitial;
-    } else {
-        userFullNameEl.innerHTML = `Пользователь <span class="user-badge">Demo</span>`;
-        userMetaEl.textContent = "Режим без данных Telegram";
-        userAvatarEl.textContent = "🤖";
-        userId = 0;
-        userDisplayName = "Гость (нет данных)";
-        userUsername = "unknown";
-    }
-
-    function showStatusMessage(text, type = 'success') {
-        statusDiv.textContent = text;
-        statusDiv.className = `status ${type}`;
-        statusDiv.style.display = 'block';
-        setTimeout(() => {
-            statusDiv.style.display = 'none';
-        }, 3000);
-    }
-
-    async function sendToAdminViaBot(messageText, actionType, rawData) {
-        if (!BOT_TOKEN || BOT_TOKEN.length < 20) {
-            showStatusMessage("Ошибка: токен бота не настроен", "error");
-            return false;
-        }
-
-        let userIdentifier = user ?
-            `${userFirstName || ''} ${userLastName || ''}`.trim() || 'Пользователь' :
-            "Неизвестный пользователь";
-
-        if (userUsername) userIdentifier += ` (@${userUsername})`;
-        userIdentifier += ` [ID: ${userId || 'нет'}]`;
-
-        let actionEmoji = "";
-        switch(actionType) {
-            case "message": actionEmoji = "💬"; break;
-            case "feedback": actionEmoji = "⭐"; break;
-            case "contact": actionEmoji = "📞"; break;
-            case "bug": actionEmoji = "🐞"; break;
-            default: actionEmoji = "📝";
-        }
-
-        const actionText = actionSelect.options[actionSelect.selectedIndex]?.text || actionType;
-
-        const currentDate = new Date();
-        const formattedTime = currentDate.toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
-
-        const adminText = `🔔 НОВОЕ СООБЩЕНИЕ ИЗ MINI APP\n━━━━━━━━━━━━━━━━\n👤 Пользователь: ${userIdentifier}\n🆔 User ID: ${userId || 'не определен'}\n📋 Тип: ${actionEmoji} ${actionText}\n📝 Текст:\n${rawData || '— пустое сообщение —'}\n🕒 Время: ${formattedTime}\n━━━━━━━━━━━━━━━━\n📱 Mini App | Support Hub`;
-
-        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: ADMIN_CHAT_ID,
-                    text: adminText,
-                    parse_mode: 'HTML',
-                    disable_web_page_preview: true
-                })
-            });
-
-            const result = await response.json();
-            if (result.ok) {
-                return true;
-            } else {
-                console.error('Telegram API error:', result);
-                return false;
+                    tonConnectUI.onStatusChange(wallet => {
+                        if (wallet) {
+                            updateWalletUI(wallet.account.address);
+                            connectWalletToBackend(wallet.account.address);
+                        } else {
+                            document.getElementById('walletAddress').textContent = 'Connect Wallet';
+                            currentUser = null;
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('TON Connect init error:', e);
             }
-        } catch (err) {
-            console.error('Network error:', err);
-            return false;
-        }
-    }
-
-    async function sendDataToAdmin(action, textData) {
-        if (!textData || textData.trim().length === 0) {
-            showStatusMessage('Введите текст сообщения', 'error');
-            return false;
         }
 
-        const originalBtnText = sendMainBtn.innerHTML;
-        sendMainBtn.innerHTML = "⏳ Отправка...";
-        sendMainBtn.disabled = true;
-
-        const success = await sendToAdminViaBot(textData.trim(), action, textData.trim());
-
-        sendMainBtn.innerHTML = originalBtnText;
-        sendMainBtn.disabled = false;
-
-        if (success) {
-            showStatusMessage('Сообщение доставлено администратору', 'success');
-            dataInput.value = '';
-            tg.MainButton.hide();
-        } else {
-            showStatusMessage('Ошибка отправки. Попробуйте позже', 'error');
+        async function connectWallet() {
+            if (!tonConnectUI) return;
+            try {
+                await tonConnectUI.connectWallet();
+            } catch (e) {
+                showToast('Failed to connect wallet', 'error');
+            }
         }
 
-        return success;
-    }
-
-    function handleSendMain() {
-        const selectedAction = actionSelect.value;
-        const rawText = dataInput.value;
-        if (!rawText.trim()) {
-            showStatusMessage('Напишите текст сообщения', 'error');
-            return;
+        function updateWalletUI(address) {
+            const shortAddr = address.slice(0, 4) + '...' + address.slice(-4);
+            document.getElementById('walletAddress').textContent = shortAddr;
         }
-        sendDataToAdmin(selectedAction, rawText);
-    }
 
-    function handleQuickMessage() {
-        const quickText = `👋 Привет! Это тестовое сообщение из Mini App. Всё работает отлично!`;
-        dataInput.value = quickText;
-        sendDataToAdmin('message', quickText);
-    }
-
-    function handleQuickFeedback() {
-        const feedbackText = `🔥 Отличный дизайн и удобство! Пользователь оценивает Mini App на 10/10. Спасибо!`;
-        dataInput.value = feedbackText;
-        sendDataToAdmin('feedback', feedbackText);
-    }
-
-    function handleCloseApp() {
-        tg.close();
-    }
-
-    function updateMainButton() {
-        const hasText = dataInput.value.trim().length > 0;
-        if (hasText) {
-            tg.MainButton.setText("Отправить админу");
-            tg.MainButton.show();
-        } else {
-            tg.MainButton.hide();
+        async function connectWalletToBackend(walletAddress) {
+            try {
+                const tgUser = tg.initDataUnsafe?.user;
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        telegram_id: tgUser?.id,
+                        telegram_name: tgUser?.first_name + ' ' + (tgUser?.last_name || ''),
+                        wallet_address: walletAddress
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentUser = data.user;
+                    updateBalance();
+                    loadGifts();
+                    loadInventory();
+                    loadOrders();
+                }
+            } catch (e) {
+                console.error('Auth error:', e);
+            }
         }
-    }
 
-    sendMainBtn.addEventListener('click', handleSendMain);
-    quickMessageBtn.addEventListener('click', handleQuickMessage);
-    quickFeedbackBtn.addEventListener('click', handleQuickFeedback);
-    closeAppBtn.addEventListener('click', handleCloseApp);
-    dataInput.addEventListener('input', updateMainButton);
-
-    tg.MainButton.onClick(() => {
-        const selectedAction = actionSelect.value;
-        const rawText = dataInput.value;
-        if (!rawText.trim()) {
-            showStatusMessage('Напишите текст перед отправкой', 'error');
-            return;
+        async function updateBalance() {
+            if (!currentUser) return;
+            try {
+                const response = await fetch(`/api/balance/${currentUser.id}`);
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('tonBalance').textContent = data.balance.toFixed(2);
+                    currentUser.balance = data.balance;
+                }
+            } catch (e) {
+                console.error('Balance error:', e);
+            }
         }
-        sendDataToAdmin(selectedAction, rawText);
-    });
 
-    dataInput.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-            e.preventDefault();
-            handleSendMain();
+        async function loadGifts() {
+            try {
+                const response = await fetch('/api/gifts');
+                giftsData = await response.json();
+                renderGifts();
+            } catch (e) {
+                document.getElementById('giftsGrid').innerHTML = '<div class="empty-state">Failed to load gifts</div>';
+            }
         }
-    });
 
-    actionSelect.addEventListener('change', () => {
-        const val = actionSelect.value;
-        let hint = "";
-        if (val === "bug") hint = "Опишите ошибку подробнее: как воспроизвести?";
-        else if (val === "feedback") hint = "Ваше мнение очень важно для нас!";
-        else if (val === "contact") hint = "Оставьте свой Telegram или номер для связи";
-        else hint = "Напишите любое сообщение администратору";
-        dataInput.placeholder = hint;
-    });
-
-    actionSelect.dispatchEvent(new Event('change'));
-    updateMainButton();
-
-    setTimeout(() => {
-        if (userId > 0) {
-            console.log("Mini App готов к работе");
+        function renderGifts() {
+            const container = document.getElementById('giftsGrid');
+            if (!giftsData.length) {
+                container.innerHTML = '<div class="empty-state">No gifts available</div>';
+                return;
+            }
+            container.innerHTML = giftsData.map(gift => `
+                <div class="gift-card" onclick="openBuyModal(${gift.id})">
+                    <div class="gift-visual">
+                        <img class="gift-img" src="${gift.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E'}" alt="${gift.name}">
+                    </div>
+                    <div class="gift-name">${escapeHtml(gift.name)}</div>
+                    <div class="gift-price">${gift.price} TON</div>
+                </div>
+            `).join('');
         }
-    }, 100);
-</script>
+
+        async function loadInventory() {
+            if (!currentUser) return;
+            try {
+                const response = await fetch(`/api/inventory/${currentUser.id}`);
+                inventoryData = await response.json();
+                renderInventory();
+            } catch (e) {
+                document.getElementById('inventoryGrid').innerHTML = '<div class="empty-state">Failed to load inventory</div>';
+            }
+        }
+
+        function renderInventory() {
+            const container = document.getElementById('inventoryGrid');
+            if (!inventoryData.length) {
+                container.innerHTML = '<div class="empty-state">Your inventory is empty</div>';
+                return;
+            }
+            container.innerHTML = inventoryData.map(item => `
+                <div class="inventory-item" onclick="openSellModal(${item.id})">
+                    <div class="inv-item-visual">
+                        <img class="inv-item-img" src="${item.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E'}" alt="${item.name}">
+                    </div>
+                    <div class="inv-item-name">${escapeHtml(item.name)}</div>
+                    ${item.on_sale ? '<div class="sell-badge">On sale: ' + item.sell_price + ' TON</div>' : '<div class="sell-badge">Not listed</div>'}
+                </div>
+            `).join('');
+        }
+
+        async function loadOrders() {
+            try {
+                const response = await fetch('/api/exchange/orders');
+                ordersData = await response.json();
+                renderOrders();
+            } catch (e) {
+                document.getElementById('ordersList').innerHTML = '<div class="empty-state">Failed to load orders</div>';
+            }
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersList');
+            if (!ordersData.length) {
+                container.innerHTML = '<div class="empty-state">No exchange orders yet</div>';
+                return;
+            }
+            container.innerHTML = ordersData.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-user">${escapeHtml(order.user_name)}</span>
+                        <span class="order-status">${order.status === 'open' ? 'Open' : 'Closed'}</span>
+                    </div>
+                    <div class="order-items">
+                        <div class="order-item">
+                            🎁 ${escapeHtml(order.offer_gift_name)}
+                        </div>
+                        <div class="order-arrow">→</div>
+                        <div class="order-item">
+                            🎁 ${escapeHtml(order.want_gift_name)}
+                        </div>
+                    </div>
+                    ${order.status === 'open' && order.user_id !== currentUser?.id ? `
+                        <div class="order-actions">
+                            <button class="btn-sm btn-primary" onclick="acceptExchange(${order.id})">Accept Exchange</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function openBuyModal(giftId) {
+            const gift = giftsData.find(g => g.id === giftId);
+            if (!gift) return;
+
+            document.getElementById('buyModalTitle').textContent = gift.name;
+            document.getElementById('buyModalImage').src = gift.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E';
+            document.getElementById('buyModalPrice').textContent = gift.price + ' TON';
+
+            const confirmBtn = document.getElementById('confirmBuyBtn');
+            confirmBtn.onclick = () => buyGift(giftId);
+
+            openModal('buyModal');
+        }
+
+        async function buyGift(giftId) {
+            if (!currentUser) {
+                showToast('Please connect wallet first', 'error');
+                return;
+            }
+
+            const gift = giftsData.find(g => g.id === giftId);
+            if (!gift) return;
+
+            if (currentUser.balance < gift.price) {
+                showToast('Insufficient balance', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/buy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        gift_id: giftId
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast(`Purchased ${gift.name} successfully!`, 'success');
+                    closeModal('buyModal');
+                    updateBalance();
+                    loadInventory();
+                } else {
+                    showToast(data.error || 'Purchase failed', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function openSellModal(inventoryId) {
+            const item = inventoryData.find(i => i.id === inventoryId);
+            if (!item) return;
+
+            document.getElementById('sellModalImage').src = item.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E';
+            document.getElementById('sellModalPrice').innerHTML = item.on_sale ? `Current price: ${item.sell_price} TON` : 'Set your price';
+
+            const confirmBtn = document.getElementById('confirmSellBtn');
+            confirmBtn.onclick = () => listForSale(inventoryId);
+
+            openModal('sellModal');
+        }
+
+        async function listForSale(inventoryId) {
+            const price = parseFloat(document.getElementById('sellPrice').value);
+            if (isNaN(price) || price <= 0) {
+                showToast('Please enter a valid price', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/inventory/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        inventory_id: inventoryId,
+                        price: price
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Item listed for sale', 'success');
+                    closeModal('sellModal');
+                    loadInventory();
+                } else {
+                    showToast(data.error || 'Failed to list item', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function openCreateExchangeModal() {
+            if (!inventoryData.length) {
+                showToast('You have no gifts to exchange', 'error');
+                return;
+            }
+
+            const offerSelect = document.getElementById('offerGiftSelect');
+            const wantSelect = document.getElementById('wantGiftSelect');
+
+            offerSelect.innerHTML = '<option value="">Select your gift</option>' +
+                inventoryData.filter(i => !i.on_sale).map(i => `<option value="${i.id}">${escapeHtml(i.name)}</option>`).join('');
+
+            wantSelect.innerHTML = '<option value="">Select desired gift</option>' +
+                giftsData.map(g => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
+
+            openModal('exchangeModal');
+        }
+
+        async function createExchangeOrder() {
+            const offerId = parseInt(document.getElementById('offerGiftSelect').value);
+            const wantId = parseInt(document.getElementById('wantGiftSelect').value);
+
+            if (!offerId || !wantId) {
+                showToast('Please select both gifts', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/exchange/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        offer_inventory_id: offerId,
+                        want_gift_id: wantId
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Exchange order created', 'success');
+                    closeModal('exchangeModal');
+                    loadOrders();
+                    loadInventory();
+                } else {
+                    showToast(data.error || 'Failed to create order', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        async function acceptExchange(orderId) {
+            try {
+                const response = await fetch('/api/exchange/accept', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        order_id: orderId
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Exchange completed!', 'success');
+                    loadOrders();
+                    loadInventory();
+                    updateBalance();
+                } else {
+                    showToast(data.error || 'Exchange failed', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function openDepositModal() {
+            document.getElementById('tonModalTitle').textContent = 'Deposit TON';
+            const confirmBtn = document.getElementById('confirmTonBtn');
+            confirmBtn.onclick = depositTON;
+            openModal('tonModal');
+        }
+
+        function openWithdrawModal() {
+            document.getElementById('tonModalTitle').textContent = 'Withdraw TON';
+            const confirmBtn = document.getElementById('confirmTonBtn');
+            confirmBtn.onclick = withdrawTON;
+            openModal('tonModal');
+        }
+
+        async function depositTON() {
+            const amount = parseFloat(document.getElementById('tonAmount').value);
+            if (isNaN(amount) || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+
+            if (!tonConnectUI || !tonConnectUI.wallet) {
+                showToast('Please connect wallet first', 'error');
+                return;
+            }
+
+            try {
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 600,
+                    messages: [{
+                        address: 'YOUR_SERVER_WALLET_ADDRESS',
+                        amount: (amount * 1e9).toString()
+                    }]
+                };
+                await tonConnectUI.sendTransaction(transaction);
+                showToast('Deposit initiated', 'success');
+                closeModal('tonModal');
+                setTimeout(() => updateBalance(), 5000);
+            } catch (e) {
+                showToast('Transaction failed', 'error');
+            }
+        }
+
+        async function withdrawTON() {
+            const amount = parseFloat(document.getElementById('tonAmount').value);
+            if (isNaN(amount) || amount <= 0) {
+                showToast('Please enter a valid amount', 'error');
+                return;
+            }
+
+            if (!currentUser || currentUser.balance < amount) {
+                showToast('Insufficient balance', 'error');
+                return;
+            }
+
+            if (!tonConnectUI || !tonConnectUI.wallet) {
+                showToast('Please connect wallet first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/withdraw', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: currentUser.id,
+                        amount: amount,
+                        wallet_address: tonConnectUI.wallet.account.address
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Withdrawal processed', 'success');
+                    closeModal('tonModal');
+                    updateBalance();
+                } else {
+                    showToast(data.error || 'Withdrawal failed', 'error');
+                }
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
+            document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
+            document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
+
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+
+            if (tab === 'inventory') loadInventory();
+            if (tab === 'exchange') loadOrders();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('walletBtn').onclick = connectWallet;
+        document.getElementById('depositBtn').onclick = openDepositModal;
+        document.getElementById('withdrawBtn').onclick = openWithdrawModal;
+        document.getElementById('createOrderBtn').onclick = openCreateExchangeModal;
+        document.getElementById('confirmExchangeBtn').onclick = createExchangeOrder;
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => switchTab(tab.dataset.tab);
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.onclick = (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+                if (page === 'market') switchTab('market');
+                else if (page === 'inventory') switchTab('inventory');
+                else if (page === 'exchange') switchTab('exchange');
+                else if (page === 'main') switchTab('market');
+
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+            };
+        });
+
+        // Initialize
+        initTonConnect();
+
+        // Mock user for demo (remove in production)
+        setTimeout(() => {
+            if (!currentUser) {
+                currentUser = { id: 1, balance: 10.0 };
+                updateBalance();
+                loadGifts();
+                loadInventory();
+                loadOrders();
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
