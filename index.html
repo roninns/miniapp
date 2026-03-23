@@ -18,7 +18,7 @@
         :root {
             --bg-primary: #0a0c15;
             --bg-secondary: #11141f;
-            --card-bg: rgba(22, 26, 40, 0.9);
+            --card-bg: rgba(22, 26, 40, 0.95);
             --accent: #5e7aff;
             --accent-glow: rgba(94, 122, 255, 0.4);
             --gold: #ffd966;
@@ -211,13 +211,7 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 12px;
-            overflow: hidden;
-        }
-
-        .gift-img, .inv-item-img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
+            font-size: 48px;
         }
 
         .gift-name, .inv-item-name {
@@ -290,11 +284,15 @@
         }
 
         .modal-gift-image {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
+            width: 80px;
+            height: 80px;
+            font-size: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 16px;
-            display: block;
+            background: rgba(255,255,255,0.1);
+            border-radius: 40px;
         }
 
         .modal-price {
@@ -395,7 +393,7 @@
             display: block;
         }
 
-        select, textarea {
+        select, input, textarea {
             width: 100%;
             padding: 12px;
             background: rgba(255,255,255,0.05);
@@ -403,6 +401,11 @@
             border-radius: 12px;
             color: white;
             font-size: 14px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         /* Loading */
@@ -448,6 +451,7 @@
             font-size: 11px;
             transition: all 0.2s;
             padding: 8px;
+            cursor: pointer;
         }
 
         .nav-item.active {
@@ -460,11 +464,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .nav-icon img {
-            width: 20px;
-            height: 20px;
+            font-size: 20px;
         }
 
         /* Toast */
@@ -492,6 +492,26 @@
                 transform: translateX(-50%) translateY(0);
             }
         }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -500,7 +520,7 @@
   <div class="header">
     <div class="logo">🎁 GiftMarket</div>
     <div class="wallet-btn" id="walletBtn">
-      <img class="wallet-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M21 12a2 2 0 0 0-2-2h-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4h2a2 2 0 0 0 2-2z'/%3E%3C/svg%3E">
+      <span class="wallet-icon">💎</span>
       <span class="wallet-address" id="walletAddress">Connect Wallet</span>
     </div>
   </div>
@@ -513,29 +533,35 @@
       <span class="currency">TON</span>
     </div>
     <div class="balance-actions">
-      <button class="btn btn-primary" id="depositBtn">Deposit</button>
-      <button class="btn btn-secondary" id="withdrawBtn">Withdraw</button>
+      <button class="btn btn-primary" id="depositBtn">💎 Deposit</button>
+      <button class="btn btn-secondary" id="withdrawBtn">💸 Withdraw</button>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
-    <div class="tab active" data-tab="market">Market</div>
-    <div class="tab" data-tab="inventory">Inventory</div>
-    <div class="tab" data-tab="exchange">Exchange</div>
+    <div class="tab active" data-tab="market">🎁 Market</div>
+    <div class="tab" data-tab="inventory">📦 Inventory</div>
+    <div class="tab" data-tab="exchange">🔄 Exchange</div>
   </div>
 
   <!-- Market Tab -->
   <div id="marketTab">
     <div id="giftsGrid" class="gifts-grid">
-      <div class="loading">Loading gifts...</div>
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <div>Loading gifts...</div>
+      </div>
     </div>
   </div>
 
   <!-- Inventory Tab -->
   <div id="inventoryTab" style="display: none;">
     <div id="inventoryGrid" class="inventory-grid">
-      <div class="loading">Loading inventory...</div>
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <div>Loading inventory...</div>
+      </div>
     </div>
   </div>
 
@@ -543,7 +569,10 @@
   <div id="exchangeTab" style="display: none;">
     <button class="btn btn-primary" id="createOrderBtn" style="margin-bottom: 16px;">+ Create Exchange Order</button>
     <div id="ordersList" class="orders-list">
-      <div class="loading">Loading orders...</div>
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <div>Loading orders...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -551,22 +580,22 @@
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
   <div class="nav-inner">
-    <a href="#" class="nav-item active" data-page="main">
+    <div class="nav-item active" data-page="main">
       <span class="nav-icon">🏠</span>
       <span>Home</span>
-    </a>
-    <a href="#" class="nav-item" data-page="market">
+    </div>
+    <div class="nav-item" data-page="market">
       <span class="nav-icon">🎁</span>
       <span>Market</span>
-    </a>
-    <a href="#" class="nav-item" data-page="inventory">
+    </div>
+    <div class="nav-item" data-page="inventory">
       <span class="nav-icon">📦</span>
       <span>Inventory</span>
-    </a>
-    <a href="#" class="nav-item" data-page="exchange">
+    </div>
+    <div class="nav-item" data-page="exchange">
       <span class="nav-icon">🔄</span>
       <span>Exchange</span>
-    </a>
+    </div>
   </div>
 </nav>
 
@@ -575,7 +604,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
     <div class="modal-title" id="buyModalTitle">Buy Gift</div>
-    <img class="modal-gift-image" id="buyModalImage" src="" alt="">
+    <div class="modal-gift-image" id="buyModalImage">🎁</div>
     <div class="modal-price" id="buyModalPrice"></div>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="closeModal('buyModal')">Cancel</button>
@@ -589,11 +618,11 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal('sellModal')">✕</button>
     <div class="modal-title">Sell Gift</div>
-    <img class="modal-gift-image" id="sellModalImage" src="" alt="">
+    <div class="modal-gift-image" id="sellModalImage">🎁</div>
     <div class="modal-price" id="sellModalPrice"></div>
     <div class="form-group">
       <label class="form-label">Sell Price (TON)</label>
-      <input type="number" id="sellPrice" class="form-group" style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:white;" placeholder="Enter price">
+      <input type="number" id="sellPrice" placeholder="Enter price" step="0.1" min="0.1">
     </div>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="closeModal('sellModal')">Cancel</button>
@@ -629,7 +658,7 @@
     <div class="modal-title" id="tonModalTitle">Deposit TON</div>
     <div class="form-group">
       <label class="form-label">Amount (TON)</label>
-      <input type="number" id="tonAmount" class="form-group" style="width:100%;padding:12px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:white;" placeholder="0.00">
+      <input type="number" id="tonAmount" placeholder="0.00" step="0.1" min="0.1">
     </div>
     <div class="modal-buttons">
       <button class="btn btn-secondary" onclick="closeModal('tonModal')">Cancel</button>
@@ -639,522 +668,551 @@
 </div>
 
 <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    // Telegram WebApp initialization
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tg.enableClosingConfirmation();
 
-        let tonConnectUI = null;
-        let currentUser = null;
-        let giftsData = [];
-        let inventoryData = [];
-        let ordersData = [];
-        let currentTab = 'market';
+    let tonConnectUI = null;
+    let currentUser = null;
+    let currentUserId = null;
+    let giftsData = [];
+    let inventoryData = [];
+    let ordersData = [];
+    let currentTab = 'market';
 
-        // Initialize TON Connect
-        async function initTonConnect() {
-            try {
-                tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                    manifestUrl: 'https://raw.githubusercontent.com/ton-connect/manifest/main/manifest.json',
-                    buttonRootId: null
-                });
+    // Get Telegram user data
+    const initData = tg.initDataUnsafe;
+    if (initData && initData.user) {
+        currentUserId = initData.user.id;
+    }
 
-                if (tonConnectUI) {
-                    const wallet = tonConnectUI.wallet;
+    // Initialize TON Connect
+    async function initTonConnect() {
+        try {
+            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+                manifestUrl: 'https://raw.githubusercontent.com/ton-connect/manifest/main/manifest.json',
+                buttonRootId: null
+            });
+
+            if (tonConnectUI) {
+                const wallet = tonConnectUI.wallet;
+                if (wallet) {
+                    updateWalletUI(wallet.account.address);
+                    await connectWalletToBackend(wallet.account.address);
+                }
+
+                tonConnectUI.onStatusChange(async wallet => {
                     if (wallet) {
                         updateWalletUI(wallet.account.address);
+                        await connectWalletToBackend(wallet.account.address);
+                    } else {
+                        document.getElementById('walletAddress').textContent = 'Connect Wallet';
+                        currentUser = null;
                     }
-
-                    tonConnectUI.onStatusChange(wallet => {
-                        if (wallet) {
-                            updateWalletUI(wallet.account.address);
-                            connectWalletToBackend(wallet.account.address);
-                        } else {
-                            document.getElementById('walletAddress').textContent = 'Connect Wallet';
-                            currentUser = null;
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error('TON Connect init error:', e);
-            }
-        }
-
-        async function connectWallet() {
-            if (!tonConnectUI) return;
-            try {
-                await tonConnectUI.connectWallet();
-            } catch (e) {
-                showToast('Failed to connect wallet', 'error');
-            }
-        }
-
-        function updateWalletUI(address) {
-            const shortAddr = address.slice(0, 4) + '...' + address.slice(-4);
-            document.getElementById('walletAddress').textContent = shortAddr;
-        }
-
-        async function connectWalletToBackend(walletAddress) {
-            try {
-                const tgUser = tg.initDataUnsafe?.user;
-                const response = await fetch('/api/auth', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        telegram_id: tgUser?.id,
-                        telegram_name: tgUser?.first_name + ' ' + (tgUser?.last_name || ''),
-                        wallet_address: walletAddress
-                    })
                 });
-                const data = await response.json();
-                if (data.success) {
-                    currentUser = data.user;
-                    updateBalance();
-                    loadGifts();
-                    loadInventory();
-                    loadOrders();
-                }
-            } catch (e) {
-                console.error('Auth error:', e);
             }
+        } catch (e) {
+            console.error('TON Connect init error:', e);
         }
+    }
 
-        async function updateBalance() {
-            if (!currentUser) return;
-            try {
-                const response = await fetch(`/api/balance/${currentUser.id}`);
-                const data = await response.json();
-                if (data.success) {
-                    document.getElementById('tonBalance').textContent = data.balance.toFixed(2);
-                    currentUser.balance = data.balance;
-                }
-            } catch (e) {
-                console.error('Balance error:', e);
-            }
+    async function connectWallet() {
+        if (!tonConnectUI) {
+            showToast('TON Connect not initialized', 'error');
+            return;
         }
-
-        async function loadGifts() {
-            try {
-                const response = await fetch('/api/gifts');
-                giftsData = await response.json();
-                renderGifts();
-            } catch (e) {
-                document.getElementById('giftsGrid').innerHTML = '<div class="empty-state">Failed to load gifts</div>';
-            }
+        try {
+            await tonConnectUI.connectWallet();
+        } catch (e) {
+            showToast('Failed to connect wallet', 'error');
         }
+    }
 
-        function renderGifts() {
-            const container = document.getElementById('giftsGrid');
-            if (!giftsData.length) {
-                container.innerHTML = '<div class="empty-state">No gifts available</div>';
-                return;
-            }
-            container.innerHTML = giftsData.map(gift => `
-                <div class="gift-card" onclick="openBuyModal(${gift.id})">
-                    <div class="gift-visual">
-                        <img class="gift-img" src="${gift.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E'}" alt="${gift.name}">
-                    </div>
-                    <div class="gift-name">${escapeHtml(gift.name)}</div>
-                    <div class="gift-price">${gift.price} TON</div>
-                </div>
-            `).join('');
-        }
+    function updateWalletUI(address) {
+        const shortAddr = address.slice(0, 6) + '...' + address.slice(-4);
+        document.getElementById('walletAddress').textContent = shortAddr;
+    }
 
-        async function loadInventory() {
-            if (!currentUser) return;
-            try {
-                const response = await fetch(`/api/inventory/${currentUser.id}`);
-                inventoryData = await response.json();
-                renderInventory();
-            } catch (e) {
-                document.getElementById('inventoryGrid').innerHTML = '<div class="empty-state">Failed to load inventory</div>';
-            }
-        }
-
-        function renderInventory() {
-            const container = document.getElementById('inventoryGrid');
-            if (!inventoryData.length) {
-                container.innerHTML = '<div class="empty-state">Your inventory is empty</div>';
-                return;
-            }
-            container.innerHTML = inventoryData.map(item => `
-                <div class="inventory-item" onclick="openSellModal(${item.id})">
-                    <div class="inv-item-visual">
-                        <img class="inv-item-img" src="${item.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E'}" alt="${item.name}">
-                    </div>
-                    <div class="inv-item-name">${escapeHtml(item.name)}</div>
-                    ${item.on_sale ? '<div class="sell-badge">On sale: ' + item.sell_price + ' TON</div>' : '<div class="sell-badge">Not listed</div>'}
-                </div>
-            `).join('');
-        }
-
-        async function loadOrders() {
-            try {
-                const response = await fetch('/api/exchange/orders');
-                ordersData = await response.json();
-                renderOrders();
-            } catch (e) {
-                document.getElementById('ordersList').innerHTML = '<div class="empty-state">Failed to load orders</div>';
-            }
-        }
-
-        function renderOrders() {
-            const container = document.getElementById('ordersList');
-            if (!ordersData.length) {
-                container.innerHTML = '<div class="empty-state">No exchange orders yet</div>';
-                return;
-            }
-            container.innerHTML = ordersData.map(order => `
-                <div class="order-card">
-                    <div class="order-header">
-                        <span class="order-user">${escapeHtml(order.user_name)}</span>
-                        <span class="order-status">${order.status === 'open' ? 'Open' : 'Closed'}</span>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            🎁 ${escapeHtml(order.offer_gift_name)}
-                        </div>
-                        <div class="order-arrow">→</div>
-                        <div class="order-item">
-                            🎁 ${escapeHtml(order.want_gift_name)}
-                        </div>
-                    </div>
-                    ${order.status === 'open' && order.user_id !== currentUser?.id ? `
-                        <div class="order-actions">
-                            <button class="btn-sm btn-primary" onclick="acceptExchange(${order.id})">Accept Exchange</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
-
-        function openBuyModal(giftId) {
-            const gift = giftsData.find(g => g.id === giftId);
-            if (!gift) return;
-
-            document.getElementById('buyModalTitle').textContent = gift.name;
-            document.getElementById('buyModalImage').src = gift.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E';
-            document.getElementById('buyModalPrice').textContent = gift.price + ' TON';
-
-            const confirmBtn = document.getElementById('confirmBuyBtn');
-            confirmBtn.onclick = () => buyGift(giftId);
-
-            openModal('buyModal');
-        }
-
-        async function buyGift(giftId) {
-            if (!currentUser) {
-                showToast('Please connect wallet first', 'error');
-                return;
-            }
-
-            const gift = giftsData.find(g => g.id === giftId);
-            if (!gift) return;
-
-            if (currentUser.balance < gift.price) {
-                showToast('Insufficient balance', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/buy', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: currentUser.id,
-                        gift_id: giftId
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast(`Purchased ${gift.name} successfully!`, 'success');
-                    closeModal('buyModal');
-                    updateBalance();
-                    loadInventory();
-                } else {
-                    showToast(data.error || 'Purchase failed', 'error');
-                }
-            } catch (e) {
-                showToast('Network error', 'error');
-            }
-        }
-
-        function openSellModal(inventoryId) {
-            const item = inventoryData.find(i => i.id === inventoryId);
-            if (!item) return;
-
-            document.getElementById('sellModalImage').src = item.image || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'white\' stroke-width=\'2\'%3E%3Cpath d=\'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5\'/%3E%3C/svg%3E';
-            document.getElementById('sellModalPrice').innerHTML = item.on_sale ? `Current price: ${item.sell_price} TON` : 'Set your price';
-
-            const confirmBtn = document.getElementById('confirmSellBtn');
-            confirmBtn.onclick = () => listForSale(inventoryId);
-
-            openModal('sellModal');
-        }
-
-        async function listForSale(inventoryId) {
-            const price = parseFloat(document.getElementById('sellPrice').value);
-            if (isNaN(price) || price <= 0) {
-                showToast('Please enter a valid price', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/inventory/list', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        inventory_id: inventoryId,
-                        price: price
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Item listed for sale', 'success');
-                    closeModal('sellModal');
-                    loadInventory();
-                } else {
-                    showToast(data.error || 'Failed to list item', 'error');
-                }
-            } catch (e) {
-                showToast('Network error', 'error');
-            }
-        }
-
-        function openCreateExchangeModal() {
-            if (!inventoryData.length) {
-                showToast('You have no gifts to exchange', 'error');
-                return;
-            }
-
-            const offerSelect = document.getElementById('offerGiftSelect');
-            const wantSelect = document.getElementById('wantGiftSelect');
-
-            offerSelect.innerHTML = '<option value="">Select your gift</option>' +
-                inventoryData.filter(i => !i.on_sale).map(i => `<option value="${i.id}">${escapeHtml(i.name)}</option>`).join('');
-
-            wantSelect.innerHTML = '<option value="">Select desired gift</option>' +
-                giftsData.map(g => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
-
-            openModal('exchangeModal');
-        }
-
-        async function createExchangeOrder() {
-            const offerId = parseInt(document.getElementById('offerGiftSelect').value);
-            const wantId = parseInt(document.getElementById('wantGiftSelect').value);
-
-            if (!offerId || !wantId) {
-                showToast('Please select both gifts', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/exchange/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: currentUser.id,
-                        offer_inventory_id: offerId,
-                        want_gift_id: wantId
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Exchange order created', 'success');
-                    closeModal('exchangeModal');
-                    loadOrders();
-                    loadInventory();
-                } else {
-                    showToast(data.error || 'Failed to create order', 'error');
-                }
-            } catch (e) {
-                showToast('Network error', 'error');
-            }
-        }
-
-        async function acceptExchange(orderId) {
-            try {
-                const response = await fetch('/api/exchange/accept', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: currentUser.id,
-                        order_id: orderId
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Exchange completed!', 'success');
-                    loadOrders();
-                    loadInventory();
-                    updateBalance();
-                } else {
-                    showToast(data.error || 'Exchange failed', 'error');
-                }
-            } catch (e) {
-                showToast('Network error', 'error');
-            }
-        }
-
-        function openDepositModal() {
-            document.getElementById('tonModalTitle').textContent = 'Deposit TON';
-            const confirmBtn = document.getElementById('confirmTonBtn');
-            confirmBtn.onclick = depositTON;
-            openModal('tonModal');
-        }
-
-        function openWithdrawModal() {
-            document.getElementById('tonModalTitle').textContent = 'Withdraw TON';
-            const confirmBtn = document.getElementById('confirmTonBtn');
-            confirmBtn.onclick = withdrawTON;
-            openModal('tonModal');
-        }
-
-        async function depositTON() {
-            const amount = parseFloat(document.getElementById('tonAmount').value);
-            if (isNaN(amount) || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
-                return;
-            }
-
-            if (!tonConnectUI || !tonConnectUI.wallet) {
-                showToast('Please connect wallet first', 'error');
-                return;
-            }
-
-            try {
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 600,
-                    messages: [{
-                        address: 'YOUR_SERVER_WALLET_ADDRESS',
-                        amount: (amount * 1e9).toString()
-                    }]
-                };
-                await tonConnectUI.sendTransaction(transaction);
-                showToast('Deposit initiated', 'success');
-                closeModal('tonModal');
-                setTimeout(() => updateBalance(), 5000);
-            } catch (e) {
-                showToast('Transaction failed', 'error');
-            }
-        }
-
-        async function withdrawTON() {
-            const amount = parseFloat(document.getElementById('tonAmount').value);
-            if (isNaN(amount) || amount <= 0) {
-                showToast('Please enter a valid amount', 'error');
-                return;
-            }
-
-            if (!currentUser || currentUser.balance < amount) {
-                showToast('Insufficient balance', 'error');
-                return;
-            }
-
-            if (!tonConnectUI || !tonConnectUI.wallet) {
-                showToast('Please connect wallet first', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/withdraw', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        user_id: currentUser.id,
-                        amount: amount,
-                        wallet_address: tonConnectUI.wallet.account.address
-                    })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    showToast('Withdrawal processed', 'success');
-                    closeModal('tonModal');
-                    updateBalance();
-                } else {
-                    showToast(data.error || 'Withdrawal failed', 'error');
-                }
-            } catch (e) {
-                showToast('Network error', 'error');
-            }
-        }
-
-        function switchTab(tab) {
-            currentTab = tab;
-            document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
-            document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
-            document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
-
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
-
-            if (tab === 'inventory') loadInventory();
-            if (tab === 'exchange') loadOrders();
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
+    async function connectWalletToBackend(walletAddress) {
+        try {
+            const response = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegram_id: currentUserId,
+                    telegram_name: initData?.user?.first_name + ' ' + (initData?.user?.last_name || ''),
+                    wallet_address: walletAddress
+                })
             });
+            const data = await response.json();
+            if (data.success) {
+                currentUser = data.user;
+                await updateBalance();
+                await loadGifts();
+                await loadInventory();
+                await loadOrders();
+                showToast('Welcome to GiftMarket! 🎉', 'success');
+            }
+        } catch (e) {
+            console.error('Auth error:', e);
+        }
+    }
+
+    // Send data to bot
+    async function sendToBot(action, data) {
+        const payload = {
+            action: action,
+            data: data,
+            userId: currentUserId
+        };
+
+        tg.sendData(JSON.stringify(payload));
+    }
+
+    async function updateBalance() {
+        if (!currentUser) return;
+        try {
+            const response = await fetch(`/api/balance/${currentUser.id}`);
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById('tonBalance').textContent = data.balance.toFixed(2);
+                if (currentUser) currentUser.balance = data.balance;
+            }
+        } catch (e) {
+            console.error('Balance error:', e);
+        }
+    }
+
+    async function loadGifts() {
+        try {
+            const response = await fetch('/api/gifts');
+            giftsData = await response.json();
+            renderGifts();
+        } catch (e) {
+            document.getElementById('giftsGrid').innerHTML = '<div class="empty-state">❌ Failed to load gifts</div>';
+        }
+    }
+
+    function renderGifts() {
+        const container = document.getElementById('giftsGrid');
+        if (!giftsData.length) {
+            container.innerHTML = '<div class="empty-state">No gifts available</div>';
+            return;
+        }
+        container.innerHTML = giftsData.map(gift => `
+            <div class="gift-card" onclick="openBuyModal(${gift.id})">
+                <div class="gift-visual">${gift.image || '🎁'}</div>
+                <div class="gift-name">${escapeHtml(gift.name)}</div>
+                <div class="gift-price">💰 ${gift.price} TON</div>
+                <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">${gift.rarity || 'Common'}</div>
+            </div>
+        `).join('');
+    }
+
+    async function loadInventory() {
+        if (!currentUser) return;
+        try {
+            const response = await fetch(`/api/inventory/${currentUser.id}`);
+            inventoryData = await response.json();
+            renderInventory();
+        } catch (e) {
+            document.getElementById('inventoryGrid').innerHTML = '<div class="empty-state">Failed to load inventory</div>';
+        }
+    }
+
+    function renderInventory() {
+        const container = document.getElementById('inventoryGrid');
+        if (!inventoryData.length) {
+            container.innerHTML = '<div class="empty-state">📦 Your inventory is empty<br>Buy some gifts in the Market!</div>';
+            return;
+        }
+        container.innerHTML = inventoryData.map(item => `
+            <div class="inventory-item" onclick="openSellModal(${item.id})">
+                <div class="inv-item-visual">${item.image || '🎁'}</div>
+                <div class="inv-item-name">${escapeHtml(item.name)}</div>
+                ${item.onSale ? '<div class="sell-badge">💰 On sale: ' + item.sellPrice + ' TON</div>' : '<div class="sell-badge">Not listed</div>'}
+            </div>
+        `).join('');
+    }
+
+    async function loadOrders() {
+        try {
+            const response = await fetch('/api/exchange/orders');
+            ordersData = await response.json();
+            renderOrders();
+        } catch (e) {
+            document.getElementById('ordersList').innerHTML = '<div class="empty-state">Failed to load orders</div>';
+        }
+    }
+
+    function renderOrders() {
+        const container = document.getElementById('ordersList');
+        if (!ordersData.length) {
+            container.innerHTML = '<div class="empty-state">🔄 No exchange orders yet<br>Create one to start trading!</div>';
+            return;
+        }
+        container.innerHTML = ordersData.map(order => `
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-user">👤 ${escapeHtml(order.userName)}</span>
+                    <span class="order-status">${order.status === 'open' ? '🟢 Open' : '🔴 Closed'}</span>
+                </div>
+                <div class="order-items">
+                    <div class="order-item">
+                        🎁 ${escapeHtml(order.offerGiftName)}
+                    </div>
+                    <div class="order-arrow">→</div>
+                    <div class="order-item">
+                        🎁 ${escapeHtml(order.wantGiftName)}
+                    </div>
+                </div>
+                ${order.status === 'open' && order.userId !== currentUser?.id ? `
+                    <div class="order-actions">
+                        <button class="btn-sm btn-primary" onclick="acceptExchange(${order.id})">Accept Exchange</button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    function openBuyModal(giftId) {
+        const gift = giftsData.find(g => g.id === giftId);
+        if (!gift) return;
+
+        document.getElementById('buyModalTitle').textContent = gift.name;
+        document.getElementById('buyModalImage').innerHTML = gift.image || '🎁';
+        document.getElementById('buyModalPrice').textContent = '💰 ' + gift.price + ' TON';
+
+        const confirmBtn = document.getElementById('confirmBuyBtn');
+        confirmBtn.onclick = () => buyGift(giftId);
+
+        openModal('buyModal');
+    }
+
+    async function buyGift(giftId) {
+        if (!currentUser) {
+            showToast('Please connect wallet first', 'error');
+            return;
         }
 
-        // Event Listeners
-        document.getElementById('walletBtn').onclick = connectWallet;
-        document.getElementById('depositBtn').onclick = openDepositModal;
-        document.getElementById('withdrawBtn').onclick = openWithdrawModal;
-        document.getElementById('createOrderBtn').onclick = openCreateExchangeModal;
-        document.getElementById('confirmExchangeBtn').onclick = createExchangeOrder;
+        const gift = giftsData.find(g => g.id === giftId);
+        if (!gift) return;
 
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.onclick = () => switchTab(tab.dataset.tab);
-        });
+        if (currentUser.balance < gift.price) {
+            showToast('Insufficient balance', 'error');
+            return;
+        }
 
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.onclick = (e) => {
-                e.preventDefault();
-                const page = item.dataset.page;
-                if (page === 'market') switchTab('market');
-                else if (page === 'inventory') switchTab('inventory');
-                else if (page === 'exchange') switchTab('exchange');
-                else if (page === 'main') switchTab('market');
-
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-            };
-        });
-
-        // Initialize
-        initTonConnect();
-
-        // Mock user for demo (remove in production)
-        setTimeout(() => {
-            if (!currentUser) {
-                currentUser = { id: 1, balance: 10.0 };
-                updateBalance();
-                loadGifts();
-                loadInventory();
-                loadOrders();
+        try {
+            const response = await fetch('/api/buy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    gift_id: giftId
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showToast(`✅ Purchased ${gift.name} successfully!`, 'success');
+                closeModal('buyModal');
+                await updateBalance();
+                await loadInventory();
+                sendToBot('purchase', { giftId: giftId, giftName: gift.name, price: gift.price });
+            } else {
+                showToast(data.error || 'Purchase failed', 'error');
             }
-        }, 1000);
-    </script>
+        } catch (e) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    function openSellModal(inventoryId) {
+        const item = inventoryData.find(i => i.id === inventoryId);
+        if (!item) return;
+
+        document.getElementById('sellModalImage').innerHTML = item.image || '🎁';
+        document.getElementById('sellModalPrice').innerHTML = item.onSale ? `Current price: ${item.sellPrice} TON` : 'Set your price';
+
+        const confirmBtn = document.getElementById('confirmSellBtn');
+        confirmBtn.onclick = () => listForSale(inventoryId);
+
+        openModal('sellModal');
+    }
+
+    async function listForSale(inventoryId) {
+        const price = parseFloat(document.getElementById('sellPrice').value);
+        if (isNaN(price) || price <= 0) {
+            showToast('Please enter a valid price', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/inventory/list', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    inventory_id: inventoryId,
+                    price: price
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showToast('✅ Item listed for sale', 'success');
+                closeModal('sellModal');
+                await loadInventory();
+                sendToBot('list_sale', { inventoryId: inventoryId, price: price });
+            } else {
+                showToast(data.error || 'Failed to list item', 'error');
+            }
+        } catch (e) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    function openCreateExchangeModal() {
+        if (!inventoryData.length) {
+            showToast('You have no gifts to exchange', 'error');
+            return;
+        }
+
+        const offerSelect = document.getElementById('offerGiftSelect');
+        const wantSelect = document.getElementById('wantGiftSelect');
+
+        const availableGifts = inventoryData.filter(i => !i.onSale);
+        if (availableGifts.length === 0) {
+            showToast('You have no available gifts for exchange', 'error');
+            return;
+        }
+
+        offerSelect.innerHTML = '<option value="">Select your gift</option>' +
+            availableGifts.map(i => `<option value="${i.id}">🎁 ${escapeHtml(i.name)}</option>`).join('');
+
+        wantSelect.innerHTML = '<option value="">Select desired gift</option>' +
+            giftsData.map(g => `<option value="${g.id}">🎁 ${escapeHtml(g.name)} (${g.price} TON)</option>`).join('');
+
+        openModal('exchangeModal');
+    }
+
+    async function createExchangeOrder() {
+        const offerId = parseInt(document.getElementById('offerGiftSelect').value);
+        const wantId = parseInt(document.getElementById('wantGiftSelect').value);
+
+        if (!offerId || !wantId) {
+            showToast('Please select both gifts', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/exchange/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    offer_inventory_id: offerId,
+                    want_gift_id: wantId
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showToast('✅ Exchange order created', 'success');
+                closeModal('exchangeModal');
+                await loadOrders();
+                await loadInventory();
+                sendToBot('create_exchange', { offerId: offerId, wantId: wantId });
+            } else {
+                showToast(data.error || 'Failed to create order', 'error');
+            }
+        } catch (e) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    async function acceptExchange(orderId) {
+        try {
+            const response = await fetch('/api/exchange/accept', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    order_id: orderId
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showToast('🎉 Exchange completed successfully!', 'success');
+                await loadOrders();
+                await loadInventory();
+                await updateBalance();
+                sendToBot('accept_exchange', { orderId: orderId });
+            } else {
+                showToast(data.error || 'Exchange failed', 'error');
+            }
+        } catch (e) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    function openDepositModal() {
+        document.getElementById('tonModalTitle').textContent = '💎 Deposit TON';
+        const confirmBtn = document.getElementById('confirmTonBtn');
+        confirmBtn.onclick = depositTON;
+        openModal('tonModal');
+    }
+
+    function openWithdrawModal() {
+        document.getElementById('tonModalTitle').textContent = '💸 Withdraw TON';
+        const confirmBtn = document.getElementById('confirmTonBtn');
+        confirmBtn.onclick = withdrawTON;
+        openModal('tonModal');
+    }
+
+    async function depositTON() {
+        const amount = parseFloat(document.getElementById('tonAmount').value);
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+
+        if (!tonConnectUI || !tonConnectUI.wallet) {
+            showToast('Please connect wallet first', 'error');
+            return;
+        }
+
+        try {
+            // In production, this would send a real TON transaction
+            showToast('💎 Deposit feature coming soon!', 'info');
+            closeModal('tonModal');
+            sendToBot('deposit', { amount: amount });
+        } catch (e) {
+            showToast('Transaction failed', 'error');
+        }
+    }
+
+    async function withdrawTON() {
+        const amount = parseFloat(document.getElementById('tonAmount').value);
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+
+        if (!currentUser || currentUser.balance < amount) {
+            showToast('Insufficient balance', 'error');
+            return;
+        }
+
+        if (!tonConnectUI || !tonConnectUI.wallet) {
+            showToast('Please connect wallet first', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: currentUser.id,
+                    amount: amount,
+                    wallet_address: tonConnectUI.wallet.account.address
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showToast('✅ Withdrawal processed', 'success');
+                closeModal('tonModal');
+                await updateBalance();
+                sendToBot('withdraw', { amount: amount });
+            } else {
+                showToast(data.error || 'Withdrawal failed', 'error');
+            }
+        } catch (e) {
+            showToast('Network error', 'error');
+        }
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
+        document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
+        document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
+
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+
+        if (tab === 'inventory') loadInventory();
+        if (tab === 'exchange') loadOrders();
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Event Listeners
+    document.getElementById('walletBtn').onclick = connectWallet;
+    document.getElementById('depositBtn').onclick = openDepositModal;
+    document.getElementById('withdrawBtn').onclick = openWithdrawModal;
+    document.getElementById('createOrderBtn').onclick = openCreateExchangeModal;
+    document.getElementById('confirmExchangeBtn').onclick = createExchangeOrder;
+
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => switchTab(tab.dataset.tab);
+    });
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.onclick = (e) => {
+            e.preventDefault();
+            const page = item.dataset.page;
+            if (page === 'market') switchTab('market');
+            else if (page === 'inventory') switchTab('inventory');
+            else if (page === 'exchange') switchTab('exchange');
+            else if (page === 'main') switchTab('market');
+
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+        };
+    });
+
+    // Initialize
+    initTonConnect();
+
+    // Mock user for demo (remove in production)
+    setTimeout(() => {
+        if (!currentUser && currentUserId) {
+            currentUser = { id: currentUserId, balance: 10.0 };
+            updateBalance();
+            loadGifts();
+            loadInventory();
+            loadOrders();
+        }
+    }, 1000);
+
+    // Set Telegram theme
+    tg.setHeaderColor('bg_color');
+    tg.setBackgroundColor('bg_color');
+</script>
 </body>
 </html>
