@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bramls | NFT Marketplace</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.4.1/dist/tonconnect-ui.min.js"></script>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bramls | NFT Marketplace</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.4.1/dist/tonconnect-ui.min.js"></script>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -75,11 +75,6 @@
             transform: scale(0.96);
         }
 
-        .wallet-icon {
-            width: 20px;
-            height: 20px;
-        }
-
         .wallet-address {
             font-size: 13px;
             font-weight: 600;
@@ -108,12 +103,21 @@
             justify-content: center;
             font-size: 40px;
             overflow: hidden;
+            position: relative;
         }
 
         .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .avatar .default-avatar {
+            font-size: 40px;
+            z-index: 1;
         }
 
         .username {
@@ -665,250 +669,250 @@
 </head>
 <body>
 <div class="container">
-  <!-- Header -->
-  <div class="header">
-    <div class="logo">🎁 Bramls</div>
-    <div class="wallet-btn" id="walletBtn">
-      <span class="wallet-icon">💎</span>
-      <span class="wallet-address" id="walletAddress">Connect Wallet</span>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">🎁 Bramls</div>
+        <div class="wallet-btn" id="walletBtn">
+            <span class="wallet-icon">💎</span>
+            <span class="wallet-address" id="walletAddress">Connect Wallet</span>
+        </div>
     </div>
-  </div>
 
-  <!-- Profile Card -->
-  <div class="profile-card" id="profileCard" style="display: none;">
-    <div class="avatar" id="userAvatar">
-      <span>👤</span>
+    <!-- Profile Card -->
+    <div class="profile-card" id="profileCard">
+        <div class="avatar" id="userAvatar">
+            <span class="default-avatar">👤</span>
+        </div>
+        <div class="username" id="userName">Loading...</div>
+        <div class="telegram-handle" id="userHandle">@loading</div>
+        <div class="balance-value" style="justify-content: center;">
+            <span class="amount" id="userBalance">0.00</span>
+            <span class="currency">TON</span>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="totalGifts">0</div>
+                <div class="stat-label">Gifts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="collectionValue">0</div>
+                <div class="stat-label">Value</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Completion</div>
+            </div>
+        </div>
     </div>
-    <div class="username" id="userName">User Name</div>
-    <div class="telegram-handle" id="userHandle">@username</div>
-    <div class="balance-value" style="justify-content: center;">
-      <span class="amount" id="userBalance">0.00</span>
-      <span class="currency">TON</span>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-value" id="totalGifts">0</div>
-        <div class="stat-label">Gifts</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="collectionValue">0</div>
-        <div class="stat-label">Value</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="completionRate">0%</div>
-        <div class="stat-label">Completion</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Balance Card -->
-  <div class="balance-card">
-    <div class="balance-label">TON Balance</div>
-    <div class="balance-value">
-      <span class="amount" id="tonBalance">0.00</span>
-      <span class="currency">TON</span>
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="balance-label">TON Balance</div>
+        <div class="balance-value">
+            <span class="amount" id="tonBalance">0.00</span>
+            <span class="currency">TON</span>
+        </div>
+        <div class="balance-actions">
+            <button class="btn btn-primary" id="depositBtn">💎 Deposit</button>
+            <button class="btn btn-secondary" id="withdrawBtn">💸 Withdraw</button>
+        </div>
     </div>
-    <div class="balance-actions">
-      <button class="btn btn-primary" id="depositBtn">💎 Deposit</button>
-      <button class="btn btn-secondary" id="withdrawBtn">💸 Withdraw</button>
-    </div>
-  </div>
 
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <button class="filter-toggle" onclick="toggleFilters()">🔍 Filter Gifts</button>
-  </div>
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <button class="filter-toggle" onclick="toggleFilters()">🔍 Filter Gifts</button>
+    </div>
 
-  <!-- Filter Panel -->
-  <div class="filter-panel" id="filterPanel">
-    <div class="filter-group">
-      <label>Gift Type</label>
-      <select id="filterType">
-        <option value="">All Types</option>
-        <option value="Plush Pepe">Plush Pepe</option>
-        <option value="Kissed Frog">Kissed Frog</option>
-        <option value="Crypto Bear">Crypto Bear</option>
-        <option value="TON Rocket">TON Rocket</option>
-      </select>
+    <!-- Filter Panel -->
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-group">
+            <label>Gift Type</label>
+            <select id="filterType">
+                <option value="">All Types</option>
+                <option value="Plush Pepe">Plush Pepe</option>
+                <option value="Kissed Frog">Kissed Frog</option>
+                <option value="Crypto Bear">Crypto Bear</option>
+                <option value="TON Rocket">TON Rocket</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Model</label>
+            <select id="filterModel">
+                <option value="">All Models</option>
+                <option value="2.6% Ramune">2.6% Ramune</option>
+                <option value="Cherry Blossom">Cherry Blossom</option>
+                <option value="Neon Pulse">Neon Pulse</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Background</label>
+            <select id="filterBackground">
+                <option value="">All Backgrounds</option>
+                <option value="English Violet">English Violet</option>
+                <option value="Midnight Blue">Midnight Blue</option>
+                <option value="Forest Green">Forest Green</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Pattern</label>
+            <select id="filterPattern">
+                <option value="">All Patterns</option>
+                <option value="Treats">Treats</option>
+                <option value="Stars">Stars</option>
+                <option value="Hearts">Hearts</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Rarity</label>
+            <select id="filterRarity">
+                <option value="">All Rarities</option>
+                <option value="Common">Common</option>
+                <option value="Rare">Rare</option>
+                <option value="Epic">Epic</option>
+                <option value="Legendary">Legendary</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Price Range (TON)</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="number" id="filterMinPrice" placeholder="Min" step="0.1">
+                <input type="number" id="filterMaxPrice" placeholder="Max" step="0.1">
+            </div>
+        </div>
+        <div class="filter-group filter-checkbox">
+            <input type="checkbox" id="filterListed">
+            <label>Only listed for sale</label>
+        </div>
+        <button class="btn btn-primary" onclick="applyFilters()" style="margin-top: 12px;">Apply Filters</button>
     </div>
-    <div class="filter-group">
-      <label>Model</label>
-      <select id="filterModel">
-        <option value="">All Models</option>
-        <option value="2.6% Ramune">2.6% Ramune</option>
-        <option value="Cherry Blossom">Cherry Blossom</option>
-        <option value="Neon Pulse">Neon Pulse</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Background</label>
-      <select id="filterBackground">
-        <option value="">All Backgrounds</option>
-        <option value="English Violet">English Violet</option>
-        <option value="Midnight Blue">Midnight Blue</option>
-        <option value="Forest Green">Forest Green</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Pattern</label>
-      <select id="filterPattern">
-        <option value="">All Patterns</option>
-        <option value="Treats">Treats</option>
-        <option value="Stars">Stars</option>
-        <option value="Hearts">Hearts</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Rarity</label>
-      <select id="filterRarity">
-        <option value="">All Rarities</option>
-        <option value="Common">Common</option>
-        <option value="Rare">Rare</option>
-        <option value="Epic">Epic</option>
-        <option value="Legendary">Legendary</option>
-      </select>
-    </div>
-    <div class="filter-group">
-      <label>Price Range (TON)</label>
-      <div style="display: flex; gap: 8px;">
-        <input type="number" id="filterMinPrice" placeholder="Min" step="0.1">
-        <input type="number" id="filterMaxPrice" placeholder="Max" step="0.1">
-      </div>
-    </div>
-    <div class="filter-group filter-checkbox">
-      <input type="checkbox" id="filterListed">
-      <label>Only listed for sale</label>
-    </div>
-    <button class="btn btn-primary" onclick="applyFilters()" style="margin-top: 12px;">Apply Filters</button>
-  </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active" data-tab="market">🎁 Market</div>
-    <div class="tab" data-tab="inventory">📦 Inventory</div>
-    <div class="tab" data-tab="exchange">🔄 Exchange</div>
-  </div>
-
-  <!-- Market Tab -->
-  <div id="marketTab">
-    <div id="giftsGrid" class="gifts-grid">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        <div>Loading gifts...</div>
-      </div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-tab="market">🎁 Market</div>
+        <div class="tab" data-tab="inventory">📦 Inventory</div>
+        <div class="tab" data-tab="exchange">🔄 Exchange</div>
     </div>
-  </div>
 
-  <!-- Inventory Tab -->
-  <div id="inventoryTab" style="display: none;">
-    <div id="inventoryGrid" class="inventory-grid">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        <div>Loading inventory...</div>
-      </div>
+    <!-- Market Tab -->
+    <div id="marketTab">
+        <div id="giftsGrid" class="gifts-grid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>Loading gifts...</div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Exchange Tab -->
-  <div id="exchangeTab" style="display: none;">
-    <button class="btn btn-primary" id="createOrderBtn" style="margin-bottom: 16px;">+ Create Exchange Order</button>
-    <div id="ordersList" class="orders-list">
-      <div class="loading">
-        <div class="loading-spinner"></div>
-        <div>Loading orders...</div>
-      </div>
+    <!-- Inventory Tab -->
+    <div id="inventoryTab" style="display: none;">
+        <div id="inventoryGrid" class="inventory-grid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>Loading inventory...</div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Exchange Tab -->
+    <div id="exchangeTab" style="display: none;">
+        <button class="btn btn-primary" id="createOrderBtn" style="margin-bottom: 16px;">+ Create Exchange Order</button>
+        <div id="ordersList" class="orders-list">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>Loading orders...</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
-  <div class="nav-inner">
-    <div class="nav-item active" data-page="main">
-      <span class="nav-icon">🏠</span>
-      <span>Home</span>
+    <div class="nav-inner">
+        <div class="nav-item active" data-page="main">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" data-page="market">
+            <span class="nav-icon">🎁</span>
+            <span>Market</span>
+        </div>
+        <div class="nav-item" data-page="inventory">
+            <span class="nav-icon">📦</span>
+            <span>Inventory</span>
+        </div>
+        <div class="nav-item" data-page="exchange">
+            <span class="nav-icon">🔄</span>
+            <span>Exchange</span>
+        </div>
     </div>
-    <div class="nav-item" data-page="market">
-      <span class="nav-icon">🎁</span>
-      <span>Market</span>
-    </div>
-    <div class="nav-item" data-page="inventory">
-      <span class="nav-icon">📦</span>
-      <span>Inventory</span>
-    </div>
-    <div class="nav-item" data-page="exchange">
-      <span class="nav-icon">🔄</span>
-      <span>Exchange</span>
-    </div>
-  </div>
 </nav>
 
 <!-- Buy Modal -->
 <div class="modal-overlay" id="buyModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
-    <div class="modal-title" id="buyModalTitle">Buy Gift</div>
-    <div class="modal-gift-image" id="buyModalImage">🎁</div>
-    <div class="modal-price" id="buyModalPrice"></div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="closeModal('buyModal')">Cancel</button>
-      <button class="btn btn-primary" id="confirmBuyBtn">Confirm Purchase</button>
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
+        <div class="modal-title" id="buyModalTitle">Buy Gift</div>
+        <div class="modal-gift-image" id="buyModalImage">🎁</div>
+        <div class="modal-price" id="buyModalPrice"></div>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeModal('buyModal')">Cancel</button>
+            <button class="btn btn-primary" id="confirmBuyBtn">Confirm Purchase</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Sell Modal -->
 <div class="modal-overlay" id="sellModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('sellModal')">✕</button>
-    <div class="modal-title">Sell Gift</div>
-    <div class="modal-gift-image" id="sellModalImage">🎁</div>
-    <div class="modal-price" id="sellModalPrice"></div>
-    <div class="form-group">
-      <label class="form-label">Sell Price (TON)</label>
-      <input type="number" id="sellPrice" placeholder="Enter price" step="0.1" min="0.1">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('sellModal')">✕</button>
+        <div class="modal-title">Sell Gift</div>
+        <div class="modal-gift-image" id="sellModalImage">🎁</div>
+        <div class="modal-price" id="sellModalPrice"></div>
+        <div class="form-group">
+            <label class="form-label">Sell Price (TON)</label>
+            <input type="number" id="sellPrice" placeholder="Enter price" step="0.1" min="0.1">
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeModal('sellModal')">Cancel</button>
+            <button class="btn btn-primary" id="confirmSellBtn">List for Sale</button>
+        </div>
     </div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="closeModal('sellModal')">Cancel</button>
-      <button class="btn btn-primary" id="confirmSellBtn">List for Sale</button>
-    </div>
-  </div>
 </div>
 
 <!-- Create Exchange Order Modal -->
 <div class="modal-overlay" id="exchangeModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('exchangeModal')">✕</button>
-    <div class="modal-title">Create Exchange Order</div>
-    <div class="form-group">
-      <label class="form-label">Your Gift</label>
-      <select id="offerGiftSelect"></select>
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('exchangeModal')">✕</button>
+        <div class="modal-title">Create Exchange Order</div>
+        <div class="form-group">
+            <label class="form-label">Your Gift</label>
+            <select id="offerGiftSelect"></select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Want to receive</label>
+            <select id="wantGiftSelect"></select>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeModal('exchangeModal')">Cancel</button>
+            <button class="btn btn-primary" id="confirmExchangeBtn">Create Order</button>
+        </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Want to receive</label>
-      <select id="wantGiftSelect"></select>
-    </div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="closeModal('exchangeModal')">Cancel</button>
-      <button class="btn btn-primary" id="confirmExchangeBtn">Create Order</button>
-    </div>
-  </div>
 </div>
 
 <!-- Deposit/Withdraw Modal -->
 <div class="modal-overlay" id="tonModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('tonModal')">✕</button>
-    <div class="modal-title" id="tonModalTitle">Deposit TON</div>
-    <div class="form-group">
-      <label class="form-label">Amount (TON)</label>
-      <input type="number" id="tonAmount" placeholder="0.00" step="0.1" min="0.1">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('tonModal')">✕</button>
+        <div class="modal-title" id="tonModalTitle">Deposit TON</div>
+        <div class="form-group">
+            <label class="form-label">Amount (TON)</label>
+            <input type="number" id="tonAmount" placeholder="0.00" step="0.1" min="0.1">
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeModal('tonModal')">Cancel</button>
+            <button class="btn btn-primary" id="confirmTonBtn">Confirm</button>
+        </div>
     </div>
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="closeModal('tonModal')">Cancel</button>
-      <button class="btn btn-primary" id="confirmTonBtn">Confirm</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -921,15 +925,107 @@
     let tonConnectUI = null;
     let currentUser = null;
     let currentUserId = null;
+    let currentUserData = null;
     let giftsData = [];
     let inventoryData = [];
     let ordersData = [];
     let currentTab = 'market';
 
-    // Get Telegram user data
+    // Get Telegram user data (важно!)
     const initData = tg.initDataUnsafe;
     if (initData && initData.user) {
         currentUserId = initData.user.id;
+        currentUserData = initData.user;
+        
+        // Сразу обновляем профиль с данными из Telegram
+        updateProfileWithTelegramData();
+    }
+
+    // Функция обновления профиля с данными из Telegram
+    function updateProfileWithTelegramData() {
+        if (!currentUserData) return;
+        
+        // Обновляем имя
+        const firstName = currentUserData.first_name || '';
+        const lastName = currentUserData.last_name || '';
+        const fullName = `${firstName} ${lastName}`.trim() || 'User';
+        document.getElementById('userName').textContent = fullName;
+        
+        // Обновляем username
+        const username = currentUserData.username || 'user';
+        document.getElementById('userHandle').textContent = '@' + username;
+        
+        // Обновляем аватар - используем фото из Telegram если доступно
+        updateUserAvatar();
+    }
+    
+    // Функция для загрузки и отображения аватара пользователя
+    async function updateUserAvatar() {
+        const avatarContainer = document.getElementById('userAvatar');
+        
+        if (!currentUserData) {
+            avatarContainer.innerHTML = '<span class="default-avatar">👤</span>';
+            return;
+        }
+        
+        // Пытаемся получить фото профиля через Telegram WebApp API
+        try {
+            // Telegram WebApp предоставляет возможность получить фото пользователя
+            // через метод getProfilePhoto, но для этого нужно расширение прав
+            // Вместо этого используем API бота для получения фото
+            
+            // Если у нас есть user_id, можно запросить фото через бот API
+            const userId = currentUserData.id;
+            
+            // Создаем ссылку на фото через Telegram Bot API
+            // Формат: https://t.me/i/userpic/320/${userId}.jpg
+            // Но это работает только если у пользователя есть публичное фото
+            
+            // Альтернатива: используем сервис для получения фото по user_id
+            const avatarUrl = `https://t.me/i/userpic/320/${userId}.jpg`;
+            
+            // Проверяем, существует ли фото
+            const img = new Image();
+            img.onload = function() {
+                // Фото загрузилось успешно
+                avatarContainer.innerHTML = `<img src="${avatarUrl}" alt="avatar">`;
+            };
+            img.onerror = function() {
+                // Фото не загрузилось, используем эмодзи на основе имени
+                const name = currentUserData.first_name || 'User';
+                const emoji = getEmojiFromName(name);
+                avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
+            };
+            img.src = avatarUrl;
+            
+            // Таймаут на случай долгой загрузки
+            setTimeout(() => {
+                if (avatarContainer.innerHTML === '') {
+                    const name = currentUserData.first_name || 'User';
+                    const emoji = getEmojiFromName(name);
+                    avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
+                }
+            }, 2000);
+            
+        } catch (e) {
+            console.error('Error loading avatar:', e);
+            const name = currentUserData.first_name || 'User';
+            const emoji = getEmojiFromName(name);
+            avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
+        }
+    }
+    
+    // Функция для получения эмодзи на основе имени пользователя
+    function getEmojiFromName(name) {
+        const firstChar = name.charAt(0).toUpperCase();
+        const emojiMap = {
+            'A': '🐻', 'B': '🦋', 'C': '🐱', 'D': '🐶', 'E': '🦅',
+            'F': '🐟', 'G': '🐸', 'H': '🦔', 'I': '🦎', 'J': '🐉',
+            'K': '🦘', 'L': '🦁', 'M': '🐭', 'N': '🦉', 'O': '🐙',
+            'P': '🐧', 'Q': '👑', 'R': '🐰', 'S': '🐍', 'T': '🐯',
+            'U': '🦄', 'V': '🐺', 'W': '🐳', 'X': '❌', 'Y': '💛', 'Z': '🦓'
+        };
+        return emojiMap[firstChar] || '🎁';
     }
 
     // Send data to bot
@@ -939,47 +1035,40 @@
             data: data,
             userId: currentUserId
         };
-
-        return new Promise((resolve) => {
-            tg.sendData(JSON.stringify(payload));
-            // In real implementation, you'd wait for response
-            resolve({ success: true });
-        });
+        
+        tg.sendData(JSON.stringify(payload));
+        return { success: true };
     }
 
-    // Load user profile
+    // Load user profile from backend
     async function loadUserProfile() {
         try {
             const response = await fetch(`/api/user/${currentUserId}`);
             const data = await response.json();
             if (data.success) {
                 currentUser = data.user;
-                updateProfileUI();
+                // Обновляем баланс из БД, но имя и аватар оставляем из Telegram
+                document.getElementById('userBalance').textContent = currentUser.balance.toFixed(2);
                 document.getElementById('tonBalance').textContent = currentUser.balance.toFixed(2);
+                document.getElementById('totalGifts').textContent = currentUser.collectionStats?.totalGifts || 0;
+                document.getElementById('collectionValue').textContent = (currentUser.collectionStats?.totalValue || 0).toFixed(1);
+                document.getElementById('completionRate').textContent = Math.round(currentUser.collectionStats?.completionRate || 0);
             }
         } catch (e) {
             console.error('Profile load error:', e);
-            // Mock user for demo
-            currentUser = { id: currentUserId, firstName: initData?.user?.first_name || 'User', username: initData?.user?.username || 'user', balance: 10.0, collectionStats: { totalGifts: 0, totalValue: 0, completionRate: 0 } };
-            updateProfileUI();
+            // Если нет бэкенда, используем локальные данные
+            if (currentUserData) {
+                currentUser = {
+                    id: currentUserId,
+                    firstName: currentUserData.first_name,
+                    username: currentUserData.username,
+                    balance: 10.0,
+                    collectionStats: { totalGifts: 0, totalValue: 0, completionRate: 0 }
+                };
+                document.getElementById('userBalance').textContent = '10.00';
+                document.getElementById('tonBalance').textContent = '10.00';
+            }
         }
-    }
-
-    function updateProfileUI() {
-        if (!currentUser) return;
-
-        document.getElementById('userName').textContent = currentUser.firstName;
-        document.getElementById('userHandle').textContent = '@' + (currentUser.telegramUsername || currentUser.username);
-        document.getElementById('userBalance').textContent = currentUser.balance.toFixed(2);
-        document.getElementById('totalGifts').textContent = currentUser.collectionStats?.totalGifts || 0;
-        document.getElementById('collectionValue').textContent = (currentUser.collectionStats?.totalValue || 0).toFixed(1);
-        document.getElementById('completionRate').textContent = Math.round(currentUser.collectionStats?.completionRate || 0);
-
-        if (currentUser.avatarUrl) {
-            document.getElementById('userAvatar').innerHTML = `<img src="${currentUser.avatarUrl}" alt="avatar">`;
-        }
-
-        document.getElementById('profileCard').style.display = 'block';
     }
 
     // Filter functions
@@ -998,7 +1087,7 @@
             maxPrice: parseFloat(document.getElementById('filterMaxPrice').value) || null,
             onlyListed: document.getElementById('filterListed').checked
         };
-
+        
         await loadGiftsWithFilters(filters);
     }
 
@@ -1016,7 +1105,6 @@
             }
         } catch (e) {
             console.error('Filter error:', e);
-            // Mock gifts data
             giftsData = [
                 { id: 1, name: "Plush Pepe", type: "Plush Pepe", model: "2.6% Ramune", background: "English Violet", pattern: "Treats", image: "🐸", price: 5.0, rarity: "Rare" },
                 { id: 2, name: "Kissed Frog", type: "Kissed Frog", model: "Cherry Blossom", background: "Midnight Blue", pattern: "Stars", image: "🐸💋", price: 15.0, rarity: "Epic" }
@@ -1126,14 +1214,14 @@
     function openBuyModal(giftId) {
         const gift = giftsData.find(g => g.id == giftId);
         if (!gift) return;
-
+        
         document.getElementById('buyModalTitle').textContent = gift.name;
         document.getElementById('buyModalImage').innerHTML = gift.image || '🎁';
         document.getElementById('buyModalPrice').textContent = '💰 ' + gift.price + ' TON';
-
+        
         const confirmBtn = document.getElementById('confirmBuyBtn');
         confirmBtn.onclick = () => buyGift(giftId);
-
+        
         openModal('buyModal');
     }
 
@@ -1142,15 +1230,15 @@
             showToast('Please connect wallet first', 'error');
             return;
         }
-
+        
         const gift = giftsData.find(g => g.id == giftId);
         if (!gift) return;
-
+        
         if (currentUser.balance < gift.price) {
             showToast('Insufficient balance', 'error');
             return;
         }
-
+        
         showToast(`✅ Purchased ${gift.name} successfully!`, 'success');
         closeModal('buyModal');
         await loadUserProfile();
@@ -1161,13 +1249,13 @@
     function openSellModal(inventoryId) {
         const item = inventoryData.find(i => i.id == inventoryId);
         if (!item) return;
-
+        
         document.getElementById('sellModalImage').innerHTML = item.image || '🎁';
         document.getElementById('sellModalPrice').innerHTML = item.onSale ? `Current price: ${item.sellPrice} TON` : 'Set your price';
-
+        
         const confirmBtn = document.getElementById('confirmSellBtn');
         confirmBtn.onclick = () => listForSale(inventoryId);
-
+        
         openModal('sellModal');
     }
 
@@ -1177,7 +1265,7 @@
             showToast('Please enter a valid price', 'error');
             return;
         }
-
+        
         showToast('✅ Item listed for sale', 'success');
         closeModal('sellModal');
         await loadInventory();
@@ -1189,34 +1277,34 @@
             showToast('You have no gifts to exchange', 'error');
             return;
         }
-
+        
         const offerSelect = document.getElementById('offerGiftSelect');
         const wantSelect = document.getElementById('wantGiftSelect');
-
+        
         const availableGifts = inventoryData.filter(i => !i.onSale);
         if (availableGifts.length === 0) {
             showToast('You have no available gifts for exchange', 'error');
             return;
         }
-
+        
         offerSelect.innerHTML = '<option value="">Select your gift</option>' +
             availableGifts.map(i => `<option value="${i.id}">🎁 ${escapeHtml(i.name)}</option>`).join('');
-
+        
         wantSelect.innerHTML = '<option value="">Select desired gift</option>' +
             giftsData.map(g => `<option value="${g.id}">🎁 ${escapeHtml(g.name)} (${g.price} TON)</option>`).join('');
-
+        
         openModal('exchangeModal');
     }
 
     async function createExchangeOrder() {
         const offerId = document.getElementById('offerGiftSelect').value;
         const wantId = document.getElementById('wantGiftSelect').value;
-
+        
         if (!offerId || !wantId) {
             showToast('Please select both gifts', 'error');
             return;
         }
-
+        
         showToast('✅ Exchange order created', 'success');
         closeModal('exchangeModal');
         await loadOrders();
@@ -1252,7 +1340,7 @@
             showToast('Please enter a valid amount', 'error');
             return;
         }
-
+        
         showToast('💎 Deposit feature coming soon!', 'info');
         closeModal('tonModal');
         sendToBot('deposit', { amount: amount });
@@ -1264,12 +1352,12 @@
             showToast('Please enter a valid amount', 'error');
             return;
         }
-
+        
         if (!currentUser || currentUser.balance < amount) {
             showToast('Insufficient balance', 'error');
             return;
         }
-
+        
         showToast('✅ Withdrawal processed', 'success');
         closeModal('tonModal');
         await loadUserProfile();
@@ -1284,11 +1372,11 @@
                     manifestUrl: 'https://raw.githubusercontent.com/ton-connect/manifest/main/manifest.json',
                     buttonRootId: null
                 });
-
+                
                 if (tonConnectUI?.wallet) {
                     await connectWalletToBackend(tonConnectUI.wallet.account.address);
                 }
-
+                
                 if (tonConnectUI) {
                     tonConnectUI.onStatusChange(async wallet => {
                         if (wallet) {
@@ -1330,10 +1418,10 @@
         document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
         document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
         document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
-
+        
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
-
+        
         if (tab === 'inventory') loadInventory();
         if (tab === 'exchange') loadOrders();
     }
@@ -1370,11 +1458,11 @@
     document.getElementById('withdrawBtn').onclick = openWithdrawModal;
     document.getElementById('createOrderBtn').onclick = openCreateExchangeModal;
     document.getElementById('confirmExchangeBtn').onclick = createExchangeOrder;
-
+    
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => switchTab(tab.dataset.tab);
     });
-
+    
     document.querySelectorAll('.nav-item').forEach(item => {
         item.onclick = (e) => {
             e.preventDefault();
@@ -1383,19 +1471,19 @@
             else if (page === 'inventory') switchTab('inventory');
             else if (page === 'exchange') switchTab('exchange');
             else if (page === 'main') switchTab('market');
-
+            
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             item.classList.add('active');
         };
     });
-
+    
     // Initialize
     initTonConnect();
     loadUserProfile();
     loadGifts();
     loadInventory();
     loadOrders();
-
+    
     // Set Telegram theme
     tg.setHeaderColor('bg_color');
     tg.setBackgroundColor('bg_color');
