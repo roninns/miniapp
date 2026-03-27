@@ -103,21 +103,12 @@
             justify-content: center;
             font-size: 40px;
             overflow: hidden;
-            position: relative;
         }
 
         .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .avatar .default-avatar {
-            font-size: 40px;
-            z-index: 1;
         }
 
         .username {
@@ -196,42 +187,16 @@
             gap: 12px;
         }
 
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), #4a6bd4);
-            color: white;
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
         /* Filter Bar */
         .filter-bar {
             margin-bottom: 16px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
         }
 
-        .filter-toggle {
+        .filter-toggle, .filter-reset {
             padding: 8px 16px;
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -276,8 +241,8 @@
             font-size: 13px;
         }
 
-        .filter-group input:focus,
-        .filter-group select:focus {
+        .filter-group select:focus,
+        .filter-group input:focus {
             outline: none;
             border-color: var(--accent);
         }
@@ -290,6 +255,26 @@
 
         .filter-checkbox input {
             width: auto;
+        }
+
+        /* Search */
+        .search-bar {
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         /* Tabs */
@@ -389,16 +374,27 @@
         .rarity-epic { color: #a855f7; }
         .rarity-legendary { color: #f59e0b; }
 
-        .inventory-item .sell-badge {
-            font-size: 12px;
+        .gift-attributes {
+            font-size: 10px;
             color: var(--text-secondary);
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .gift-attribute {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 12px;
         }
 
         /* Modals */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(20px);
             display: none;
             align-items: center;
@@ -443,15 +439,15 @@
         }
 
         .modal-gift-image {
-            width: 80px;
-            height: 80px;
-            font-size: 48px;
+            width: 100px;
+            height: 100px;
+            font-size: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 16px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
+            border-radius: 50%;
         }
 
         .modal-price {
@@ -462,9 +458,63 @@
             margin-bottom: 20px;
         }
 
+        .modal-attributes {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-attribute {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-attribute:last-child {
+            border-bottom: none;
+        }
+
         .modal-buttons {
             display: flex;
             gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #4a6bd4);
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            flex: 1;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 20px;
         }
 
         /* Exchange Orders */
@@ -533,13 +583,6 @@
             gap: 8px;
         }
 
-        .btn-sm {
-            flex: 1;
-            padding: 8px;
-            font-size: 12px;
-            border-radius: 20px;
-        }
-
         /* Form */
         .form-group {
             margin-bottom: 16px;
@@ -552,7 +595,7 @@
             display: block;
         }
 
-        select, input, textarea {
+        select, input {
             width: 100%;
             padding: 12px;
             background: rgba(255, 255, 255, 0.05);
@@ -665,6 +708,29 @@
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
+
+        /* Stats Card */
+        .stats-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stats-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
     </style>
 </head>
 <body>
@@ -673,18 +739,17 @@
     <div class="header">
         <div class="logo">🎁 Bramls</div>
         <div class="wallet-btn" id="walletBtn">
-            <span class="wallet-icon">💎</span>
             <span class="wallet-address" id="walletAddress">Connect Wallet</span>
         </div>
     </div>
 
     <!-- Profile Card -->
-    <div class="profile-card" id="profileCard">
+    <div class="profile-card" id="profileCard" style="display: none;">
         <div class="avatar" id="userAvatar">
-            <span class="default-avatar">👤</span>
+            <span>👤</span>
         </div>
-        <div class="username" id="userName">Loading...</div>
-        <div class="telegram-handle" id="userHandle">@loading</div>
+        <div class="username" id="userName">User Name</div>
+        <div class="telegram-handle" id="userHandle">@username</div>
         <div class="balance-value" style="justify-content: center;">
             <span class="amount" id="userBalance">0.00</span>
             <span class="currency">TON</span>
@@ -718,9 +783,15 @@
         </div>
     </div>
 
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search gifts by name, model, background...">
+    </div>
+
     <!-- Filter Bar -->
     <div class="filter-bar">
-        <button class="filter-toggle" onclick="toggleFilters()">🔍 Filter Gifts</button>
+        <button class="filter-toggle" id="filterToggleBtn">🔍 Filter Gifts</button>
+        <button class="filter-reset" id="filterResetBtn">✕ Reset</button>
     </div>
 
     <!-- Filter Panel -->
@@ -729,37 +800,24 @@
             <label>Gift Type</label>
             <select id="filterType">
                 <option value="">All Types</option>
-                <option value="Plush Pepe">Plush Pepe</option>
-                <option value="Kissed Frog">Kissed Frog</option>
-                <option value="Crypto Bear">Crypto Bear</option>
-                <option value="TON Rocket">TON Rocket</option>
             </select>
         </div>
         <div class="filter-group">
             <label>Model</label>
             <select id="filterModel">
                 <option value="">All Models</option>
-                <option value="2.6% Ramune">2.6% Ramune</option>
-                <option value="Cherry Blossom">Cherry Blossom</option>
-                <option value="Neon Pulse">Neon Pulse</option>
             </select>
         </div>
         <div class="filter-group">
             <label>Background</label>
             <select id="filterBackground">
                 <option value="">All Backgrounds</option>
-                <option value="English Violet">English Violet</option>
-                <option value="Midnight Blue">Midnight Blue</option>
-                <option value="Forest Green">Forest Green</option>
             </select>
         </div>
         <div class="filter-group">
             <label>Pattern</label>
             <select id="filterPattern">
                 <option value="">All Patterns</option>
-                <option value="Treats">Treats</option>
-                <option value="Stars">Stars</option>
-                <option value="Hearts">Hearts</option>
             </select>
         </div>
         <div class="filter-group">
@@ -783,7 +841,7 @@
             <input type="checkbox" id="filterListed">
             <label>Only listed for sale</label>
         </div>
-        <button class="btn btn-primary" onclick="applyFilters()" style="margin-top: 12px;">Apply Filters</button>
+        <button class="btn btn-primary" id="applyFiltersBtn">Apply Filters</button>
     </div>
 
     <!-- Tabs -->
@@ -791,6 +849,7 @@
         <div class="tab active" data-tab="market">🎁 Market</div>
         <div class="tab" data-tab="inventory">📦 Inventory</div>
         <div class="tab" data-tab="exchange">🔄 Exchange</div>
+        <div class="tab" data-tab="stats">📊 Stats</div>
     </div>
 
     <!-- Market Tab -->
@@ -823,17 +882,55 @@
             </div>
         </div>
     </div>
+
+    <!-- Stats Tab -->
+    <div id="statsTab" style="display: none;">
+        <div class="stats-card">
+            <div class="stats-title">📈 Platform Statistics</div>
+            <div class="stats-row">
+                <span>Total Users:</span>
+                <span id="statTotalUsers">-</span>
+            </div>
+            <div class="stats-row">
+                <span>Total Gifts:</span>
+                <span id="statTotalGifts">-</span>
+            </div>
+            <div class="stats-row">
+                <span>Gifts Sold:</span>
+                <span id="statGiftsSold">-</span>
+            </div>
+            <div class="stats-row">
+                <span>Total Volume:</span>
+                <span id="statTotalVolume">- TON</span>
+            </div>
+            <div class="stats-row">
+                <span>Listed for Sale:</span>
+                <span id="statListedGifts">-</span>
+            </div>
+        </div>
+        <div class="stats-card">
+            <div class="stats-title">🎨 Unique Attributes</div>
+            <div class="stats-row">
+                <span>Models:</span>
+                <span id="statModelsCount">-</span>
+            </div>
+            <div class="stats-row">
+                <span>Backgrounds:</span>
+                <span id="statBackgroundsCount">-</span>
+            </div>
+            <div class="stats-row">
+                <span>Patterns:</span>
+                <span id="statPatternsCount">-</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
     <div class="nav-inner">
-        <div class="nav-item active" data-page="main">
+        <div class="nav-item active" data-page="market">
             <span class="nav-icon">🏠</span>
-            <span>Home</span>
-        </div>
-        <div class="nav-item" data-page="market">
-            <span class="nav-icon">🎁</span>
             <span>Market</span>
         </div>
         <div class="nav-item" data-page="inventory">
@@ -843,6 +940,10 @@
         <div class="nav-item" data-page="exchange">
             <span class="nav-icon">🔄</span>
             <span>Exchange</span>
+        </div>
+        <div class="nav-item" data-page="stats">
+            <span class="nav-icon">📊</span>
+            <span>Stats</span>
         </div>
     </div>
 </nav>
@@ -854,6 +955,7 @@
         <div class="modal-title" id="buyModalTitle">Buy Gift</div>
         <div class="modal-gift-image" id="buyModalImage">🎁</div>
         <div class="modal-price" id="buyModalPrice"></div>
+        <div class="modal-attributes" id="buyModalAttributes"></div>
         <div class="modal-buttons">
             <button class="btn btn-secondary" onclick="closeModal('buyModal')">Cancel</button>
             <button class="btn btn-primary" id="confirmBuyBtn">Confirm Purchase</button>
@@ -867,7 +969,6 @@
         <button class="modal-close" onclick="closeModal('sellModal')">✕</button>
         <div class="modal-title">Sell Gift</div>
         <div class="modal-gift-image" id="sellModalImage">🎁</div>
-        <div class="modal-price" id="sellModalPrice"></div>
         <div class="form-group">
             <label class="form-label">Sell Price (TON)</label>
             <input type="number" id="sellPrice" placeholder="Enter price" step="0.1" min="0.1">
@@ -925,222 +1026,205 @@
     let tonConnectUI = null;
     let currentUser = null;
     let currentUserId = null;
-    let currentUserData = null;
     let giftsData = [];
     let inventoryData = [];
     let ordersData = [];
     let currentTab = 'market';
+    let filterOptions = { models: [], backgrounds: [], patterns: [], types: [] };
+    let currentFilters = {
+        type: null,
+        model: null,
+        background: null,
+        pattern: null,
+        rarity: null,
+        minPrice: null,
+        maxPrice: null,
+        onlyListed: false
+    };
+    let searchQuery = '';
 
-    // Get Telegram user data (важно!)
+    // Get Telegram user data
     const initData = tg.initDataUnsafe;
     if (initData && initData.user) {
         currentUserId = initData.user.id;
-        currentUserData = initData.user;
-        
-        // Сразу обновляем профиль с данными из Telegram
-        updateProfileWithTelegramData();
     }
 
-    // Функция обновления профиля с данными из Telegram
-    function updateProfileWithTelegramData() {
-        if (!currentUserData) return;
-        
-        // Обновляем имя
-        const firstName = currentUserData.first_name || '';
-        const lastName = currentUserData.last_name || '';
-        const fullName = `${firstName} ${lastName}`.trim() || 'User';
-        document.getElementById('userName').textContent = fullName;
-        
-        // Обновляем username
-        const username = currentUserData.username || 'user';
-        document.getElementById('userHandle').textContent = '@' + username;
-        
-        // Обновляем аватар - используем фото из Telegram если доступно
-        updateUserAvatar();
-    }
-    
-    // Функция для загрузки и отображения аватара пользователя
-    async function updateUserAvatar() {
-        const avatarContainer = document.getElementById('userAvatar');
-        
-        if (!currentUserData) {
-            avatarContainer.innerHTML = '<span class="default-avatar">👤</span>';
-            return;
-        }
-        
-        // Пытаемся получить фото профиля через Telegram WebApp API
-        try {
-            // Telegram WebApp предоставляет возможность получить фото пользователя
-            // через метод getProfilePhoto, но для этого нужно расширение прав
-            // Вместо этого используем API бота для получения фото
-            
-            // Если у нас есть user_id, можно запросить фото через бот API
-            const userId = currentUserData.id;
-            
-            // Создаем ссылку на фото через Telegram Bot API
-            // Формат: https://t.me/i/userpic/320/${userId}.jpg
-            // Но это работает только если у пользователя есть публичное фото
-            
-            // Альтернатива: используем сервис для получения фото по user_id
-            const avatarUrl = `https://t.me/i/userpic/320/${userId}.jpg`;
-            
-            // Проверяем, существует ли фото
-            const img = new Image();
-            img.onload = function() {
-                // Фото загрузилось успешно
-                avatarContainer.innerHTML = `<img src="${avatarUrl}" alt="avatar">`;
-            };
-            img.onerror = function() {
-                // Фото не загрузилось, используем эмодзи на основе имени
-                const name = currentUserData.first_name || 'User';
-                const emoji = getEmojiFromName(name);
-                avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
-            };
-            img.src = avatarUrl;
-            
-            // Таймаут на случай долгой загрузки
-            setTimeout(() => {
-                if (avatarContainer.innerHTML === '') {
-                    const name = currentUserData.first_name || 'User';
-                    const emoji = getEmojiFromName(name);
-                    avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
-                }
-            }, 2000);
-            
-        } catch (e) {
-            console.error('Error loading avatar:', e);
-            const name = currentUserData.first_name || 'User';
-            const emoji = getEmojiFromName(name);
-            avatarContainer.innerHTML = `<span class="default-avatar">${emoji}</span>`;
-        }
-    }
-    
-    // Функция для получения эмодзи на основе имени пользователя
-    function getEmojiFromName(name) {
-        const firstChar = name.charAt(0).toUpperCase();
-        const emojiMap = {
-            'A': '🐻', 'B': '🦋', 'C': '🐱', 'D': '🐶', 'E': '🦅',
-            'F': '🐟', 'G': '🐸', 'H': '🦔', 'I': '🦎', 'J': '🐉',
-            'K': '🦘', 'L': '🦁', 'M': '🐭', 'N': '🦉', 'O': '🐙',
-            'P': '🐧', 'Q': '👑', 'R': '🐰', 'S': '🐍', 'T': '🐯',
-            'U': '🦄', 'V': '🐺', 'W': '🐳', 'X': '❌', 'Y': '💛', 'Z': '🦓'
-        };
-        return emojiMap[firstChar] || '🎁';
-    }
-
-    // Send data to bot
+    // Send data to bot and receive response
     async function sendToBot(action, data) {
-        const payload = {
-            action: action,
-            data: data,
-            userId: currentUserId
-        };
-        
-        tg.sendData(JSON.stringify(payload));
-        return { success: true };
+        return new Promise((resolve, reject) => {
+            const callbackId = Date.now().toString();
+            const payload = {
+                action: action,
+                data: data,
+                userId: currentUserId,
+                callbackId: callbackId
+            };
+            
+            // Store callback
+            window.callbacks = window.callbacks || {};
+            window.callbacks[callbackId] = resolve;
+            
+            // Send to bot
+            tg.sendData(JSON.stringify(payload));
+            
+            // Timeout after 10 seconds
+            setTimeout(() => {
+                if (window.callbacks[callbackId]) {
+                    delete window.callbacks[callbackId];
+                    reject(new Error('Request timeout'));
+                }
+            }, 10000);
+        });
     }
 
-    // Load user profile from backend
+    // Handle response from bot (called from Telegram WebApp)
+    window.handleBotResponse = function(response) {
+        try {
+            const data = typeof response === 'string' ? JSON.parse(response) : response;
+            if (data.callbackId && window.callbacks[data.callbackId]) {
+                window.callbacks[data.callbackId](data);
+                delete window.callbacks[data.callbackId];
+            }
+        } catch (e) {
+            console.error('Error handling response:', e);
+        }
+    };
+
+    // Load filter options
+    async function loadFilterOptions() {
+        try {
+            const response = await sendToBot('get_filter_options', {});
+            if (response.success) {
+                filterOptions = response;
+                populateFilterSelects();
+            }
+        } catch (e) {
+            console.error('Error loading filter options:', e);
+        }
+    }
+
+    function populateFilterSelects() {
+        const typeSelect = document.getElementById('filterType');
+        const modelSelect = document.getElementById('filterModel');
+        const backgroundSelect = document.getElementById('filterBackground');
+        const patternSelect = document.getElementById('filterPattern');
+        
+        if (filterOptions.types) {
+            typeSelect.innerHTML = '<option value="">All Types</option>' + 
+                filterOptions.types.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('');
+        }
+        if (filterOptions.models) {
+            modelSelect.innerHTML = '<option value="">All Models</option>' + 
+                filterOptions.models.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+        }
+        if (filterOptions.backgrounds) {
+            backgroundSelect.innerHTML = '<option value="">All Backgrounds</option>' + 
+                filterOptions.backgrounds.map(b => `<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
+        }
+        if (filterOptions.patterns) {
+            patternSelect.innerHTML = '<option value="">All Patterns</option>' + 
+                filterOptions.patterns.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+        }
+    }
+
+    // Load user profile
     async function loadUserProfile() {
         try {
-            const response = await fetch(`/api/user/${currentUserId}`);
-            const data = await response.json();
-            if (data.success) {
-                currentUser = data.user;
-                // Обновляем баланс из БД, но имя и аватар оставляем из Telegram
-                document.getElementById('userBalance').textContent = currentUser.balance.toFixed(2);
+            const response = await sendToBot('get_user_profile', {});
+            if (response.success) {
+                currentUser = response.user;
+                updateProfileUI();
                 document.getElementById('tonBalance').textContent = currentUser.balance.toFixed(2);
-                document.getElementById('totalGifts').textContent = currentUser.collectionStats?.totalGifts || 0;
-                document.getElementById('collectionValue').textContent = (currentUser.collectionStats?.totalValue || 0).toFixed(1);
-                document.getElementById('completionRate').textContent = Math.round(currentUser.collectionStats?.completionRate || 0);
             }
         } catch (e) {
             console.error('Profile load error:', e);
-            // Если нет бэкенда, используем локальные данные
-            if (currentUserData) {
-                currentUser = {
-                    id: currentUserId,
-                    firstName: currentUserData.first_name,
-                    username: currentUserData.username,
-                    balance: 10.0,
-                    collectionStats: { totalGifts: 0, totalValue: 0, completionRate: 0 }
-                };
-                document.getElementById('userBalance').textContent = '10.00';
-                document.getElementById('tonBalance').textContent = '10.00';
-            }
         }
     }
 
-    // Filter functions
-    function toggleFilters() {
-        document.getElementById('filterPanel').classList.toggle('active');
+    function updateProfileUI() {
+        if (!currentUser) return;
+        
+        document.getElementById('userName').textContent = currentUser.firstName;
+        document.getElementById('userHandle').textContent = '@' + (currentUser.telegramUsername || 'user');
+        document.getElementById('userBalance').textContent = currentUser.balance.toFixed(2);
+        document.getElementById('totalGifts').textContent = currentUser.collectionStats?.totalGifts || 0;
+        document.getElementById('collectionValue').textContent = (currentUser.collectionStats?.totalValue || 0).toFixed(1);
+        document.getElementById('completionRate').textContent = Math.round(currentUser.collectionStats?.completionRate || 0);
+        
+        if (currentUser.avatarFileId) {
+            // Avatar would be loaded via Telegram API
+        }
+        
+        document.getElementById('profileCard').style.display = 'block';
     }
 
-    async function applyFilters() {
+    // Load gifts with filters
+    async function loadGifts() {
         const filters = {
-            type: document.getElementById('filterType').value || null,
-            model: document.getElementById('filterModel').value || null,
-            background: document.getElementById('filterBackground').value || null,
-            pattern: document.getElementById('filterPattern').value || null,
-            rarity: document.getElementById('filterRarity').value || null,
-            minPrice: parseFloat(document.getElementById('filterMinPrice').value) || null,
-            maxPrice: parseFloat(document.getElementById('filterMaxPrice').value) || null,
-            onlyListed: document.getElementById('filterListed').checked
+            type: currentFilters.type,
+            model: currentFilters.model,
+            background: currentFilters.background,
+            pattern: currentFilters.pattern,
+            rarity: currentFilters.rarity,
+            minPrice: currentFilters.minPrice,
+            maxPrice: currentFilters.maxPrice,
+            onlyListed: currentFilters.onlyListed
         };
         
-        await loadGiftsWithFilters(filters);
-    }
-
-    async function loadGiftsWithFilters(filters) {
         try {
-            const response = await fetch('/api/gifts/filter', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(filters)
-            });
-            const data = await response.json();
-            if (data.success) {
-                giftsData = data.gifts;
-                renderGifts();
+            const response = await sendToBot('filter_gifts', filters);
+            if (response.success) {
+                giftsData = response.gifts;
+                applySearchFilter();
             }
         } catch (e) {
-            console.error('Filter error:', e);
-            giftsData = [
-                { id: 1, name: "Plush Pepe", type: "Plush Pepe", model: "2.6% Ramune", background: "English Violet", pattern: "Treats", image: "🐸", price: 5.0, rarity: "Rare" },
-                { id: 2, name: "Kissed Frog", type: "Kissed Frog", model: "Cherry Blossom", background: "Midnight Blue", pattern: "Stars", image: "🐸💋", price: 15.0, rarity: "Epic" }
-            ];
+            console.error('Error loading gifts:', e);
+            giftsData = [];
             renderGifts();
         }
     }
-
-    function renderGifts() {
+    
+    function applySearchFilter() {
+        let filtered = [...giftsData];
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(gift => 
+                gift.name.toLowerCase().includes(query) ||
+                gift.model.toLowerCase().includes(query) ||
+                gift.background.toLowerCase().includes(query) ||
+                gift.pattern.toLowerCase().includes(query)
+            );
+        }
+        renderGifts(filtered);
+    }
+    
+    function renderGifts(gifts = giftsData) {
         const container = document.getElementById('giftsGrid');
-        if (!giftsData.length) {
-            container.innerHTML = '<div class="empty-state">No gifts available</div>';
+        if (!gifts.length) {
+            container.innerHTML = '<div class="empty-state">🎁 No gifts available<br>Try different filters!</div>';
             return;
         }
-        container.innerHTML = giftsData.map(gift => `
+        container.innerHTML = gifts.map(gift => `
             <div class="gift-card" onclick="openBuyModal('${gift.id}')">
-                <div class="gift-visual">${gift.image || '🎁'}</div>
+                <div class="gift-visual">${gift.imageUrl || '🎁'}</div>
                 <div class="gift-name">${escapeHtml(gift.name)}</div>
-                <div class="gift-price">💰 ${gift.price} TON</div>
+                <div class="gift-price">💰 ${gift.price.toFixed(1)} TON</div>
                 <div class="rarity-badge rarity-${gift.rarity?.toLowerCase() || 'common'}">${gift.rarity || 'Common'}</div>
-                <div style="font-size: 10px; color: var(--text-secondary);">${gift.model || ''} · ${gift.background || ''}</div>
+                <div class="gift-attributes">
+                    <span class="gift-attribute">🎨 ${escapeHtml(gift.model)}</span>
+                    <span class="gift-attribute">🎭 ${escapeHtml(gift.background)}</span>
+                    <span class="gift-attribute">✨ ${escapeHtml(gift.pattern)}</span>
+                </div>
             </div>
         `).join('');
     }
-
-    async function loadGifts() {
-        await loadGiftsWithFilters({});
-    }
-
+    
+    // Load inventory
     async function loadInventory() {
-        if (!currentUser) return;
         try {
-            const response = await fetch(`/api/inventory/${currentUser.id}`);
-            const data = await response.json();
-            if (data.success) {
-                inventoryData = data.inventory;
+            const response = await sendToBot('get_inventory', {});
+            if (response.success) {
+                inventoryData = response.inventory;
                 renderInventory();
             }
         } catch (e) {
@@ -1149,7 +1233,7 @@
             renderInventory();
         }
     }
-
+    
     function renderInventory() {
         const container = document.getElementById('inventoryGrid');
         if (!inventoryData.length) {
@@ -1158,20 +1242,25 @@
         }
         container.innerHTML = inventoryData.map(item => `
             <div class="inventory-item" onclick="openSellModal('${item.id}')">
-                <div class="inv-item-visual">${item.image || '🎁'}</div>
+                <div class="inv-item-visual">${item.imageUrl || '🎁'}</div>
                 <div class="inv-item-name">${escapeHtml(item.name)}</div>
                 ${item.onSale ? '<div class="sell-badge">💰 On sale: ' + item.sellPrice + ' TON</div>' : '<div class="sell-badge">Not listed</div>'}
                 <div class="rarity-badge rarity-${item.rarity?.toLowerCase() || 'common'}">${item.rarity || 'Common'}</div>
+                <div class="gift-attributes">
+                    <span class="gift-attribute">${escapeHtml(item.model)}</span>
+                    <span class="gift-attribute">${escapeHtml(item.background)}</span>
+                    <span class="gift-attribute">${escapeHtml(item.pattern)}</span>
+                </div>
             </div>
         `).join('');
     }
-
+    
+    // Load exchange orders
     async function loadOrders() {
         try {
-            const response = await fetch('/api/exchange/orders');
-            const data = await response.json();
-            if (data.success) {
-                ordersData = data.orders;
+            const response = await sendToBot('get_orders', {});
+            if (response.success) {
+                ordersData = response.orders;
                 renderOrders();
             }
         } catch (e) {
@@ -1180,7 +1269,7 @@
             renderOrders();
         }
     }
-
+    
     function renderOrders() {
         const container = document.getElementById('ordersList');
         if (!ordersData.length) {
@@ -1210,21 +1299,57 @@
             </div>
         `).join('');
     }
-
+    
+    // Load statistics
+    async function loadStatistics() {
+        try {
+            const response = await sendToBot('get_statistics', {});
+            if (response.success) {
+                const stats = response.statistics;
+                document.getElementById('statTotalUsers').textContent = stats.totalUsers;
+                document.getElementById('statTotalGifts').textContent = stats.totalGifts;
+                document.getElementById('statGiftsSold').textContent = stats.totalGiftsSold;
+                document.getElementById('statTotalVolume').textContent = stats.totalVolume.toFixed(2);
+                document.getElementById('statListedGifts').textContent = stats.totalGiftsListed;
+            }
+        } catch (e) {
+            console.error('Error loading stats:', e);
+        }
+        
+        try {
+            const response = await sendToBot('get_filter_options', {});
+            if (response.success) {
+                document.getElementById('statModelsCount').textContent = response.models?.length || 0;
+                document.getElementById('statBackgroundsCount').textContent = response.backgrounds?.length || 0;
+                document.getElementById('statPatternsCount').textContent = response.patterns?.length || 0;
+            }
+        } catch (e) {
+            console.error('Error loading attribute stats:', e);
+        }
+    }
+    
+    // Buy/Sell/Exchange functions
     function openBuyModal(giftId) {
         const gift = giftsData.find(g => g.id == giftId);
         if (!gift) return;
         
         document.getElementById('buyModalTitle').textContent = gift.name;
-        document.getElementById('buyModalImage').innerHTML = gift.image || '🎁';
-        document.getElementById('buyModalPrice').textContent = '💰 ' + gift.price + ' TON';
+        document.getElementById('buyModalImage').innerHTML = gift.imageUrl || '🎁';
+        document.getElementById('buyModalPrice').textContent = '💰 ' + gift.price.toFixed(1) + ' TON';
+        document.getElementById('buyModalAttributes').innerHTML = `
+            <div class="modal-attribute"><span>Model:</span><span>${escapeHtml(gift.model)}</span></div>
+            <div class="modal-attribute"><span>Background:</span><span>${escapeHtml(gift.background)}</span></div>
+            <div class="modal-attribute"><span>Pattern:</span><span>${escapeHtml(gift.pattern)}</span></div>
+            <div class="modal-attribute"><span>Rarity:</span><span>${gift.rarity}</span></div>
+            ${gift.totalSupply ? `<div class="modal-attribute"><span>Supply:</span><span>${gift.issuedCount}/${gift.totalSupply}</span></div>` : ''}
+        `;
         
         const confirmBtn = document.getElementById('confirmBuyBtn');
         confirmBtn.onclick = () => buyGift(giftId);
         
         openModal('buyModal');
     }
-
+    
     async function buyGift(giftId) {
         if (!currentUser) {
             showToast('Please connect wallet first', 'error');
@@ -1239,26 +1364,35 @@
             return;
         }
         
-        showToast(`✅ Purchased ${gift.name} successfully!`, 'success');
-        closeModal('buyModal');
-        await loadUserProfile();
-        await loadInventory();
-        sendToBot('buy_gift', { giftId: giftId });
+        try {
+            const response = await sendToBot('buy_gift', { giftId: giftId });
+            if (response.success) {
+                showToast(`✅ Purchased ${gift.name} successfully!`, 'success');
+                closeModal('buyModal');
+                await loadUserProfile();
+                await loadInventory();
+                await loadGifts();
+            } else {
+                showToast(response.error || 'Purchase failed', 'error');
+            }
+        } catch (e) {
+            showToast('Purchase failed: ' + e.message, 'error');
+        }
     }
-
+    
     function openSellModal(inventoryId) {
         const item = inventoryData.find(i => i.id == inventoryId);
         if (!item) return;
         
-        document.getElementById('sellModalImage').innerHTML = item.image || '🎁';
-        document.getElementById('sellModalPrice').innerHTML = item.onSale ? `Current price: ${item.sellPrice} TON` : 'Set your price';
+        document.getElementById('sellModalImage').innerHTML = item.imageUrl || '🎁';
+        document.getElementById('sellPrice').value = item.sellPrice || '';
         
         const confirmBtn = document.getElementById('confirmSellBtn');
         confirmBtn.onclick = () => listForSale(inventoryId);
         
         openModal('sellModal');
     }
-
+    
     async function listForSale(inventoryId) {
         const price = parseFloat(document.getElementById('sellPrice').value);
         if (isNaN(price) || price <= 0) {
@@ -1266,20 +1400,25 @@
             return;
         }
         
-        showToast('✅ Item listed for sale', 'success');
-        closeModal('sellModal');
-        await loadInventory();
-        sendToBot('sell_gift', { inventoryId: inventoryId, price: price });
+        try {
+            const response = await sendToBot('sell_gift', { inventoryId: inventoryId, price: price });
+            if (response.success) {
+                showToast('✅ Item listed for sale', 'success');
+                closeModal('sellModal');
+                await loadInventory();
+            } else {
+                showToast(response.error || 'Failed to list', 'error');
+            }
+        } catch (e) {
+            showToast('Failed to list: ' + e.message, 'error');
+        }
     }
-
+    
     function openCreateExchangeModal() {
         if (!inventoryData.length) {
             showToast('You have no gifts to exchange', 'error');
             return;
         }
-        
-        const offerSelect = document.getElementById('offerGiftSelect');
-        const wantSelect = document.getElementById('wantGiftSelect');
         
         const availableGifts = inventoryData.filter(i => !i.onSale);
         if (availableGifts.length === 0) {
@@ -1287,15 +1426,18 @@
             return;
         }
         
+        const offerSelect = document.getElementById('offerGiftSelect');
+        const wantSelect = document.getElementById('wantGiftSelect');
+        
         offerSelect.innerHTML = '<option value="">Select your gift</option>' +
             availableGifts.map(i => `<option value="${i.id}">🎁 ${escapeHtml(i.name)}</option>`).join('');
         
         wantSelect.innerHTML = '<option value="">Select desired gift</option>' +
-            giftsData.map(g => `<option value="${g.id}">🎁 ${escapeHtml(g.name)} (${g.price} TON)</option>`).join('');
+            giftsData.map(g => `<option value="${g.id}">🎁 ${escapeHtml(g.name)} (${g.price.toFixed(1)} TON)</option>`).join('');
         
         openModal('exchangeModal');
     }
-
+    
     async function createExchangeOrder() {
         const offerId = document.getElementById('offerGiftSelect').value;
         const wantId = document.getElementById('wantGiftSelect').value;
@@ -1305,66 +1447,38 @@
             return;
         }
         
-        showToast('✅ Exchange order created', 'success');
-        closeModal('exchangeModal');
-        await loadOrders();
-        await loadInventory();
-        sendToBot('create_exchange', { offerId: offerId, wantId: wantId });
+        try {
+            const response = await sendToBot('create_exchange', { offerId: offerId, wantId: wantId });
+            if (response.success) {
+                showToast('✅ Exchange order created', 'success');
+                closeModal('exchangeModal');
+                await loadOrders();
+                await loadInventory();
+            } else {
+                showToast(response.error || 'Failed to create order', 'error');
+            }
+        } catch (e) {
+            showToast('Failed: ' + e.message, 'error');
+        }
     }
-
+    
     async function acceptExchange(orderId) {
-        showToast('🎉 Exchange completed successfully!', 'success');
-        await loadOrders();
-        await loadInventory();
-        await loadUserProfile();
-        sendToBot('accept_exchange', { orderId: orderId });
-    }
-
-    function openDepositModal() {
-        document.getElementById('tonModalTitle').textContent = '💎 Deposit TON';
-        const confirmBtn = document.getElementById('confirmTonBtn');
-        confirmBtn.onclick = depositTON;
-        openModal('tonModal');
-    }
-
-    function openWithdrawModal() {
-        document.getElementById('tonModalTitle').textContent = '💸 Withdraw TON';
-        const confirmBtn = document.getElementById('confirmTonBtn');
-        confirmBtn.onclick = withdrawTON;
-        openModal('tonModal');
-    }
-
-    async function depositTON() {
-        const amount = parseFloat(document.getElementById('tonAmount').value);
-        if (isNaN(amount) || amount <= 0) {
-            showToast('Please enter a valid amount', 'error');
-            return;
+        try {
+            const response = await sendToBot('accept_exchange', { orderId: orderId });
+            if (response.success) {
+                showToast('🎉 Exchange completed successfully!', 'success');
+                await loadOrders();
+                await loadInventory();
+                await loadUserProfile();
+            } else {
+                showToast(response.error || 'Exchange failed', 'error');
+            }
+        } catch (e) {
+            showToast('Failed: ' + e.message, 'error');
         }
-        
-        showToast('💎 Deposit feature coming soon!', 'info');
-        closeModal('tonModal');
-        sendToBot('deposit', { amount: amount });
     }
-
-    async function withdrawTON() {
-        const amount = parseFloat(document.getElementById('tonAmount').value);
-        if (isNaN(amount) || amount <= 0) {
-            showToast('Please enter a valid amount', 'error');
-            return;
-        }
-        
-        if (!currentUser || currentUser.balance < amount) {
-            showToast('Insufficient balance', 'error');
-            return;
-        }
-        
-        showToast('✅ Withdrawal processed', 'success');
-        closeModal('tonModal');
-        await loadUserProfile();
-        sendToBot('withdraw', { amount: amount });
-    }
-
-    // TON Connect
+    
+    // Wallet functions
     async function initTonConnect() {
         try {
             if (typeof TON_CONNECT_UI !== 'undefined') {
@@ -1389,7 +1503,7 @@
             console.error('TON Connect error:', e);
         }
     }
-
+    
     async function connectWallet() {
         if (!tonConnectUI) {
             showToast('TON Connect not initialized', 'error');
@@ -1401,39 +1515,133 @@
             showToast('Failed to connect wallet', 'error');
         }
     }
-
+    
     async function connectWalletToBackend(walletAddress) {
-        await sendToBot('connect_wallet', { walletAddress });
-        showToast('Wallet connected! 💎', 'success');
+        try {
+            const response = await sendToBot('connect_wallet', { walletAddress });
+            if (response.success) {
+                const shortAddr = walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4);
+                document.getElementById('walletAddress').textContent = shortAddr;
+                showToast('Wallet connected! 💎', 'success');
+                await loadUserProfile();
+            }
+        } catch (e) {
+            console.error('Error connecting wallet:', e);
+        }
+    }
+    
+    // Deposit/Withdraw
+    function openDepositModal() {
+        document.getElementById('tonModalTitle').textContent = '💎 Deposit TON';
+        const confirmBtn = document.getElementById('confirmTonBtn');
+        confirmBtn.onclick = depositTON;
+        openModal('tonModal');
+    }
+    
+    function openWithdrawModal() {
+        document.getElementById('tonModalTitle').textContent = '💸 Withdraw TON';
+        const confirmBtn = document.getElementById('confirmTonBtn');
+        confirmBtn.onclick = withdrawTON;
+        openModal('tonModal');
+    }
+    
+    async function depositTON() {
+        const amount = parseFloat(document.getElementById('tonAmount').value);
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+        showToast('💎 Deposit feature coming soon!', 'info');
+        closeModal('tonModal');
+    }
+    
+    async function withdrawTON() {
+        const amount = parseFloat(document.getElementById('tonAmount').value);
+        if (isNaN(amount) || amount <= 0) {
+            showToast('Please enter a valid amount', 'error');
+            return;
+        }
+        if (!currentUser || currentUser.balance < amount) {
+            showToast('Insufficient balance', 'error');
+            return;
+        }
+        showToast('✅ Withdrawal processed', 'success');
+        closeModal('tonModal');
         await loadUserProfile();
     }
-
-    function updateWalletUI(address) {
-        const shortAddr = address.slice(0, 6) + '...' + address.slice(-4);
-        document.getElementById('walletAddress').textContent = shortAddr;
+    
+    // Filter functions
+    function toggleFilters() {
+        document.getElementById('filterPanel').classList.toggle('active');
     }
-
+    
+    function resetFilters() {
+        currentFilters = {
+            type: null,
+            model: null,
+            background: null,
+            pattern: null,
+            rarity: null,
+            minPrice: null,
+            maxPrice: null,
+            onlyListed: false
+        };
+        
+        document.getElementById('filterType').value = '';
+        document.getElementById('filterModel').value = '';
+        document.getElementById('filterBackground').value = '';
+        document.getElementById('filterPattern').value = '';
+        document.getElementById('filterRarity').value = '';
+        document.getElementById('filterMinPrice').value = '';
+        document.getElementById('filterMaxPrice').value = '';
+        document.getElementById('filterListed').checked = false;
+        
+        loadGifts();
+        showToast('Filters reset', 'success');
+    }
+    
+    function applyFilters() {
+        currentFilters = {
+            type: document.getElementById('filterType').value || null,
+            model: document.getElementById('filterModel').value || null,
+            background: document.getElementById('filterBackground').value || null,
+            pattern: document.getElementById('filterPattern').value || null,
+            rarity: document.getElementById('filterRarity').value || null,
+            minPrice: parseFloat(document.getElementById('filterMinPrice').value) || null,
+            maxPrice: parseFloat(document.getElementById('filterMaxPrice').value) || null,
+            onlyListed: document.getElementById('filterListed').checked
+        };
+        
+        loadGifts();
+        document.getElementById('filterPanel').classList.remove('active');
+        showToast('Filters applied', 'success');
+    }
+    
+    // Tab switching
     function switchTab(tab) {
         currentTab = tab;
         document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
         document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
         document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
+        document.getElementById('statsTab').style.display = tab === 'stats' ? 'block' : 'none';
         
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
         
         if (tab === 'inventory') loadInventory();
         if (tab === 'exchange') loadOrders();
+        if (tab === 'stats') loadStatistics();
     }
-
+    
+    // UI Helpers
     function openModal(modalId) {
         document.getElementById(modalId).classList.add('active');
     }
-
+    
     function closeModal(modalId) {
         document.getElementById(modalId).classList.remove('active');
     }
-
+    
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -1441,7 +1649,7 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
+    
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -1451,27 +1659,31 @@
             return m;
         });
     }
-
+    
+    // Search handler
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        applySearchFilter();
+    });
+    
     // Event Listeners
     document.getElementById('walletBtn').onclick = connectWallet;
     document.getElementById('depositBtn').onclick = openDepositModal;
     document.getElementById('withdrawBtn').onclick = openWithdrawModal;
     document.getElementById('createOrderBtn').onclick = openCreateExchangeModal;
     document.getElementById('confirmExchangeBtn').onclick = createExchangeOrder;
+    document.getElementById('filterToggleBtn').onclick = toggleFilters;
+    document.getElementById('filterResetBtn').onclick = resetFilters;
+    document.getElementById('applyFiltersBtn').onclick = applyFilters;
     
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => switchTab(tab.dataset.tab);
     });
     
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.onclick = (e) => {
-            e.preventDefault();
+        item.onclick = () => {
             const page = item.dataset.page;
-            if (page === 'market') switchTab('market');
-            else if (page === 'inventory') switchTab('inventory');
-            else if (page === 'exchange') switchTab('exchange');
-            else if (page === 'main') switchTab('market');
-            
+            switchTab(page);
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             item.classList.add('active');
         };
@@ -1479,6 +1691,7 @@
     
     // Initialize
     initTonConnect();
+    loadFilterOptions();
     loadUserProfile();
     loadGifts();
     loadInventory();
