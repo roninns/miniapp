@@ -6,7 +6,7 @@
   <title>Bramls | NFT Обмен</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -29,7 +29,6 @@
       --border-hover: #444444;
       --accent: #ffffff;
       --accent-text: #000000;
-      --accent-blue: #0098EA;
       --green: #22c55e;
       --red: #ef4444;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
@@ -88,47 +87,25 @@
       letter-spacing: -0.3px;
     }
 
-    .wallet-section {
+    /* TonConnect button container */
+    #ton-connect-container {
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
-    .wallet-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
+    #ton-connect-container button {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 8px !important;
+      color: var(--text-primary) !important;
+      font-family: inherit !important;
+      font-size: 13px !important;
+      padding: 8px 14px !important;
+      height: auto !important;
     }
 
-    .wallet-btn:hover {
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-    }
-
-    .wallet-btn:active {
-      transform: scale(0.97);
-    }
-
-    .wallet-btn.connected {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
-
-    .wallet-address {
-      font-size: 11px;
-      color: var(--text-secondary);
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    #ton-connect-container button:hover {
+      border-color: var(--border-hover) !important;
     }
 
     /* Profile Card */
@@ -215,11 +192,6 @@
       justify-content: space-between;
     }
 
-    .balance-info {
-      display: flex;
-      flex-direction: column;
-    }
-
     .balance-label {
       font-size: 13px;
       color: var(--text-secondary);
@@ -239,35 +211,6 @@
       color: var(--text-secondary);
       font-weight: 500;
       margin-left: 4px;
-    }
-
-    .balance-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      transition: all 0.15s ease;
-    }
-
-    .btn-icon:hover {
-      border-color: var(--border-hover);
-      color: var(--text-primary);
-    }
-
-    .btn-icon:active {
-      transform: scale(0.95);
     }
 
     /* Filter Bar */
@@ -342,6 +285,14 @@
       color: var(--text-primary);
       font-size: 14px;
       transition: all 0.15s ease;
+      appearance: none;
+    }
+
+    .filter-group select {
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
     }
 
     .filter-group input:focus, .filter-group select:focus {
@@ -532,7 +483,6 @@
       font-size: 13px;
       font-weight: 500;
       color: var(--text-secondary);
-      margin-bottom: 4px;
     }
 
     .capsule-btn.selected .capsule-name {
@@ -555,7 +505,6 @@
       cursor: pointer;
       transition: all 0.15s ease;
       text-align: center;
-      letter-spacing: 0.2px;
     }
 
     .btn:active {
@@ -570,23 +519,6 @@
 
     .btn-primary:hover {
       background: #e5e5e5;
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      margin-top: 8px;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--border-hover);
-      background: var(--bg-tertiary);
     }
 
     .fee-badge {
@@ -624,9 +556,6 @@
     .order-user {
       font-size: 13px;
       color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .order-status {
@@ -635,9 +564,6 @@
       border-radius: 4px;
       background: var(--bg-secondary);
       color: var(--text-secondary);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
       border: 1px solid var(--border);
     }
 
@@ -743,7 +669,6 @@
       font-size: 16px;
       cursor: pointer;
       margin-bottom: 16px;
-      transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -760,7 +685,6 @@
       font-weight: 600;
       margin-bottom: 20px;
       color: var(--text-primary);
-      text-align: left;
       clear: both;
     }
 
@@ -840,7 +764,6 @@
       color: var(--text-secondary);
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
     .modal-section-value {
@@ -875,8 +798,6 @@
       font-size: 10px;
       color: var(--text-secondary);
       margin-top: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
     }
 
     .modal-characteristics {
@@ -922,33 +843,6 @@
       border: 1px solid var(--border);
     }
 
-    /* Wallet Modal */
-    .wallet-modal-content {
-      text-align: center;
-    }
-
-    .wallet-modal-icon {
-      font-size: 64px;
-      margin-bottom: 16px;
-    }
-
-    .wallet-modal-address {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      font-size: 13px;
-      color: var(--text-primary);
-      word-break: break-all;
-      margin-bottom: 20px;
-    }
-
-    .wallet-modal-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
@@ -973,11 +867,9 @@
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      text-decoration: none;
       color: var(--text-secondary);
       font-size: 10px;
       font-weight: 500;
-      transition: all 0.15s ease;
       padding: 6px 20px;
       cursor: pointer;
       border-radius: 6px;
@@ -1007,18 +899,7 @@
       z-index: 2000;
       animation: slideUp 0.3s ease;
       border: 1px solid var(--border);
-      white-space: nowrap;
       box-shadow: var(--shadow-lg);
-    }
-
-    .toast.error {
-      border-color: var(--red);
-      color: var(--red);
-    }
-
-    .toast.success {
-      border-color: var(--green);
-      color: var(--green);
     }
 
     @keyframes slideUp {
@@ -1064,17 +945,6 @@
       opacity: 0.3;
     }
 
-    .empty-state-text {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .empty-state-subtext {
-      font-size: 11px;
-      color: var(--text-tertiary);
-      margin-top: 6px;
-    }
-
     ::-webkit-scrollbar {
       width: 3px;
     }
@@ -1087,20 +957,6 @@
       background: var(--border);
       border-radius: 3px;
     }
-
-    select {
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 36px;
-    }
-
-    /* TonConnect button customization */
-    #tonConnectBtn {
-      display: inline-block;
-    }
   </style>
 </head>
 <body>
@@ -1112,13 +968,7 @@
       <div class="logo-icon">B</div>
       <div class="logo-text">Bramls</div>
     </div>
-    <div class="wallet-section">
-      <div id="tonConnectBtn"></div>
-      <button class="wallet-btn" id="walletInfoBtn" style="display: none;">
-        <span>💎</span>
-        <span class="wallet-address" id="walletAddressDisplay"></span>
-      </button>
-    </div>
+    <div id="ton-connect-container"></div>
   </div>
 
   <!-- Profile Card -->
@@ -1144,16 +994,12 @@
 
   <!-- Balance Card -->
   <div class="balance-card">
-    <div class="balance-info">
+    <div>
       <div class="balance-label">Баланс</div>
       <div>
         <span class="balance-value" id="tonBalance">0.00</span>
         <span class="balance-currency">TON</span>
       </div>
-    </div>
-    <div class="balance-actions">
-      <button class="btn-icon" id="depositBtn" title="Пополнить">↓</button>
-      <button class="btn-icon" id="withdrawBtn" title="Вывести">↑</button>
     </div>
   </div>
 
@@ -1244,7 +1090,7 @@
         </div>
       </div>
       <div class="fee-badge">Комиссия: 0.1 TON</div>
-      <button class="btn btn-primary" id="createOrderBtn" disabled>Создать заявку</button>
+      <button class="btn btn-primary" id="createOrderBtn">Создать заявку</button>
     </div>
 
     <div class="tabs" style="margin-top: 8px;">
@@ -1300,23 +1146,6 @@
   </div>
 </div>
 
-<!-- Wallet Modal -->
-<div class="modal-overlay" id="walletModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('walletModal')">✕</button>
-    <div class="wallet-modal-content">
-      <div class="wallet-modal-icon">💎</div>
-      <div class="modal-title">TON Кошелёк</div>
-      <div class="wallet-modal-address" id="walletModalAddress">Не подключён</div>
-      <div class="wallet-modal-actions">
-        <button class="btn btn-primary" id="connectWalletBtn">Подключить кошелёк</button>
-        <button class="btn btn-secondary" id="disconnectWalletBtn" style="display: none;">Отключить</button>
-        <button class="btn btn-secondary" onclick="closeModal('walletModal')">Закрыть</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
   const tg = window.Telegram.WebApp;
   tg.ready();
@@ -1344,81 +1173,39 @@
 
   // ==================== TON Connect ====================
   function initTonConnect() {
-    if (typeof TonConnect === 'undefined') {
-      console.error('TonConnect not loaded');
-      return;
-    }
-
-    tonConnect = new TonConnect({
-      manifestUrl: 'https://miniapp-livid-pi.vercel.app/tonconnect-manifest.json'
+    const container = document.getElementById('ton-connect-container');
+    
+    tonConnect = new TonConnectUI({
+      manifestUrl: 'https://miniapp-livid-pi.vercel.app/tonconnect-manifest.json',
+      buttonRootId: 'ton-connect-container'
     });
 
-    // Restore connection
-    tonConnect.restoreConnection().then(() => {
-      const connected = tonConnect.connected;
-      if (connected && tonConnect.wallet) {
-        walletAddress = tonConnect.wallet.account.address;
-        updateWalletUI();
-      }
-    }).catch(e => {
-      console.error('Failed to restore connection:', e);
-    });
-
-    // Subscribe to status changes
-    tonConnect.onStatusChange(async (wallet) => {
-      if (wallet) {
-        walletAddress = wallet.account.address;
-        updateWalletUI();
-        await saveWalletToServer(walletAddress);
-        showToast('Кошелёк подключён', 'success');
+    // Listen for connection status
+    const unsubscribe = tonConnect.onStatusChange((walletAndWalletInfo) => {
+      if (walletAndWalletInfo) {
+        const wallet = walletAndWalletInfo;
+        if (wallet.account) {
+          walletAddress = wallet.account.address;
+          console.log('Wallet connected:', walletAddress);
+          saveWalletToServer(walletAddress);
+          showToast('Кошелёк подключён');
+        }
       } else {
         walletAddress = null;
-        updateWalletUI();
+        console.log('Wallet disconnected');
         showToast('Кошелёк отключён');
       }
-    });
-
-    // Render connect button
-    const buttonContainer = document.getElementById('tonConnectBtn');
-    tonConnect.renderButton(buttonContainer, {
-      buttonType: 'wallet',
-      theme: 'dark',
-      radius: 8,
-      height: 40
+      updateWalletUI();
     });
   }
 
   function updateWalletUI() {
-    const walletBtn = document.getElementById('walletInfoBtn');
-    const walletAddressDisplay = document.getElementById('walletAddressDisplay');
-    const walletModalAddress = document.getElementById('walletModalAddress');
-    const connectWalletBtn = document.getElementById('connectWalletBtn');
-    const disconnectWalletBtn = document.getElementById('disconnectWalletBtn');
     const createOrderBtn = document.getElementById('createOrderBtn');
-
+    
     if (walletAddress) {
-      walletBtn.style.display = 'flex';
-      walletBtn.classList.add('connected');
-      const shortAddress = walletAddress.slice(0, 6) + '...' + walletAddress.slice(-4);
-      walletAddressDisplay.textContent = shortAddress;
-      walletModalAddress.textContent = walletAddress;
-      if (connectWalletBtn) connectWalletBtn.style.display = 'none';
-      if (disconnectWalletBtn) disconnectWalletBtn.style.display = 'block';
       if (createOrderBtn) createOrderBtn.disabled = false;
-
-      // Update balance from server
-      if (currentUser) {
-        updateServerBalance();
-      }
     } else {
-      walletBtn.style.display = 'none';
-      walletBtn.classList.remove('connected');
-      walletAddressDisplay.textContent = '';
-      walletModalAddress.textContent = 'Не подключён';
-      if (connectWalletBtn) connectWalletBtn.style.display = 'block';
-      if (disconnectWalletBtn) disconnectWalletBtn.style.display = 'none';
       if (createOrderBtn) createOrderBtn.disabled = true;
-      document.getElementById('tonBalance').textContent = '0.00';
     }
   }
 
@@ -1427,71 +1214,6 @@
       await apiCall('connect_wallet', { walletAddress: address });
     } catch (e) {
       console.error('Failed to save wallet:', e);
-    }
-  }
-
-  async function updateServerBalance() {
-    try {
-      const res = await apiCall('get_balance');
-      if (res.success) {
-        document.getElementById('tonBalance').textContent = (res.balance || 0).toFixed(2);
-      }
-    } catch (e) {
-      console.error('Failed to update balance:', e);
-    }
-  }
-
-  async function connectWallet() {
-    if (!tonConnect) {
-      showToast('TonConnect не загружен', 'error');
-      return;
-    }
-
-    try {
-      await tonConnect.connectWallet();
-    } catch (e) {
-      console.error('Connect wallet error:', e);
-      showToast('Ошибка подключения', 'error');
-    }
-  }
-
-  async function disconnectWallet() {
-    if (!tonConnect) return;
-
-    try {
-      await tonConnect.disconnect();
-      walletAddress = null;
-      updateWalletUI();
-      showToast('Кошелёк отключён');
-    } catch (e) {
-      console.error('Disconnect wallet error:', e);
-      showToast('Ошибка отключения', 'error');
-    }
-  }
-
-  async function sendTransaction() {
-    if (!tonConnect || !walletAddress) {
-      showToast('Подключите кошелёк', 'error');
-      return;
-    }
-
-    try {
-      const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 600,
-        messages: [
-          {
-            address: walletAddress,
-            amount: '100000000', // 0.1 TON in nanoTON
-          }
-        ]
-      };
-
-      const result = await tonConnect.sendTransaction(transaction);
-      showToast('Транзакция отправлена', 'success');
-      await updateServerBalance();
-    } catch (e) {
-      console.error('Transaction error:', e);
-      showToast('Транзакция отменена', 'error');
     }
   }
 
@@ -1505,7 +1227,7 @@
       });
       return await response.json();
     } catch (e) {
-      showToast('Ошибка соединения', 'error');
+      showToast('Ошибка соединения');
       return { success: false, error: 'Connection error' };
     }
   }
@@ -1555,7 +1277,7 @@
   function renderGifts() {
     const container = document.getElementById('giftsGrid');
     if (!allGifts || allGifts.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎁</div><div class="empty-state-text">Подарки не найдены</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎁</div><div>Подарки не найдены</div></div>';
       return;
     }
 
@@ -1590,7 +1312,7 @@
   function renderInventory() {
     const container = document.getElementById('inventoryGrid');
     if (!inventory || inventory.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">Инвентарь пуст</div><div class="empty-state-subtext">Совершайте обмены чтобы пополнить коллекцию</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div>Инвентарь пуст</div></div>';
       return;
     }
 
@@ -1608,7 +1330,6 @@
           ${i.background ? `<span class="char-badge">${escapeHtml(i.background.substring(0, 12))}${i.background.length > 12 ? '...' : ''}</span>` : ''}
           ${i.pattern ? `<span class="char-badge">${escapeHtml(i.pattern.substring(0, 12))}${i.pattern.length > 12 ? '...' : ''}</span>` : ''}
         </div>
-        ${i.modelPercent ? `<div style="font-size:10px;color:var(--text-tertiary);margin-top:4px;">${i.modelPercent}%</div>` : ''}
       </div>
     `).join('');
   }
@@ -1627,7 +1348,7 @@
     const orders = exchangeTab === 'open' ? openOrders : myOrders;
 
     if (!orders || orders.length === 0) {
-      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔄</div><div class="empty-state-text">Нет активных заявок</div></div>';
+      container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔄</div><div>Нет активных заявок</div></div>';
       return;
     }
 
@@ -1712,7 +1433,7 @@
         }
       });
     }
-    document.getElementById('giftDetailChars').innerHTML = charsHtml || '<div class="char-item"><span class="char-label">Нет данных</span></div>';
+    document.getElementById('giftDetailChars').innerHTML = charsHtml || '<div class="char-item">Нет данных</div>';
 
     openModal('giftDetailModal');
   }
@@ -1724,7 +1445,7 @@
     const container = document.getElementById('giftSelectorGrid');
 
     if (!items || items.length === 0) {
-      container.innerHTML = '<div class="empty-state" style="grid-column: span 2;"><div class="empty-state-text">Нет доступных подарков</div></div>';
+      container.innerHTML = '<div class="empty-state" style="grid-column: span 2;"><div>Нет доступных подарков</div></div>';
     } else {
       container.innerHTML = items.slice(0, 50).map(item => `
         <div class="gift-selector-item" onclick="selectGift('${type}', ${type === 'offer' ? item.nftId : item.id})">
@@ -1781,12 +1502,11 @@
   // ==================== Exchange Functions ====================
   async function createExchangeOrder() {
     if (!walletAddress) {
-      showToast('Подключите TON кошелёк', 'error');
+      showToast('Подключите TON кошелёк');
       return;
     }
-    if (!selectedOfferGift) { showToast('Выберите ваш подарок', 'error'); return; }
-    if (!selectedWantGift) { showToast('Выберите желаемый подарок', 'error'); return; }
-    if (!currentUser || currentUser.balance < 0.1) { showToast('Недостаточно средств (0.1 TON)', 'error'); return; }
+    if (!selectedOfferGift) { showToast('Выберите ваш подарок'); return; }
+    if (!selectedWantGift) { showToast('Выберите желаемый подарок'); return; }
 
     const res = await apiCall('create_exchange', {
       offerId: selectedOfferGift.nftId,
@@ -1794,23 +1514,7 @@
     });
 
     if (res.success) {
-      // Send TON transaction for exchange fee
-      try {
-        const transaction = {
-          validUntil: Math.floor(Date.now() / 1000) + 600,
-          messages: [
-            {
-              address: walletAddress,
-              amount: '100000000', // 0.1 TON
-            }
-          ]
-        };
-        await tonConnect.sendTransaction(transaction);
-        showToast('Заявка создана', 'success');
-      } catch (e) {
-        showToast('Заявка создана без транзакции', 'success');
-      }
-
+      showToast('Заявка создана');
       selectedOfferGift = null;
       selectedWantGift = null;
       document.getElementById('selectedOfferName').textContent = 'Выберите';
@@ -1822,40 +1526,24 @@
       checkExchangeReady();
       await loadOrders();
     } else {
-      showToast(res.error || 'Ошибка', 'error');
+      showToast(res.error || 'Ошибка');
     }
   }
 
   async function acceptExchange(orderId) {
     if (!walletAddress) {
-      showToast('Подключите TON кошелёк', 'error');
+      showToast('Подключите TON кошелёк');
       return;
     }
-    if (!currentUser || currentUser.balance < 0.1) { showToast('Недостаточно средств (0.1 TON)', 'error'); return; }
 
     const res = await apiCall('accept_exchange', { orderId });
     if (res.success) {
-      try {
-        const transaction = {
-          validUntil: Math.floor(Date.now() / 1000) + 600,
-          messages: [
-            {
-              address: walletAddress,
-              amount: '100000000', // 0.1 TON
-            }
-          ]
-        };
-        await tonConnect.sendTransaction(transaction);
-        showToast('Обмен выполнен', 'success');
-      } catch (e) {
-        showToast('Обмен выполнен', 'success');
-      }
-
+      showToast('Обмен выполнен');
       await loadOrders();
       await loadInventory();
       await loadUserProfile();
     } else {
-      showToast(res.error || 'Ошибка', 'error');
+      showToast(res.error || 'Ошибка');
     }
   }
 
@@ -1903,9 +1591,9 @@
   function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
   // ==================== Toast ====================
-  function showToast(msg, type = '') {
+  function showToast(msg) {
     const toast = document.createElement('div');
-    toast.className = 'toast ' + type;
+    toast.className = 'toast';
     toast.textContent = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);
@@ -1935,28 +1623,6 @@
   document.getElementById('selectOfferBtn').addEventListener('click', () => openGiftSelector('offer'));
   document.getElementById('selectWantBtn').addEventListener('click', () => openGiftSelector('want'));
 
-  document.getElementById('walletInfoBtn').addEventListener('click', () => {
-    document.getElementById('walletModalAddress').textContent = walletAddress || 'Не подключён';
-    document.getElementById('connectWalletBtn').style.display = walletAddress ? 'none' : 'block';
-    document.getElementById('disconnectWalletBtn').style.display = walletAddress ? 'block' : 'none';
-    openModal('walletModal');
-  });
-
-  document.getElementById('connectWalletBtn').addEventListener('click', connectWallet);
-  document.getElementById('disconnectWalletBtn').addEventListener('click', disconnectWallet);
-
-  document.getElementById('depositBtn').addEventListener('click', () => {
-    if (!walletAddress) {
-      showToast('Подключите кошелёк', 'error');
-      return;
-    }
-    sendTransaction();
-  });
-
-  document.getElementById('withdrawBtn').addEventListener('click', () => {
-    showToast('Вывод средств временно недоступен');
-  });
-
   document.querySelectorAll('.tab[data-tab]').forEach(tab => {
     tab.addEventListener('click', () => switchTab(tab.dataset.tab));
   });
@@ -1977,10 +1643,8 @@
 
   // ==================== Init ====================
   async function init() {
-    // Initialize TonConnect first
     initTonConnect();
 
-    // Load all data
     await Promise.all([
       loadCollections(),
       loadUserProfile(),
