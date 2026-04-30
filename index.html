@@ -4,901 +4,267 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Bramls | NFT Обмен</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+    :root {
+      --bg: #000000;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #2a2a2a;
+      --border-active: #555555;
+      --text: #ffffff;
+      --text-secondary: #aaaaaa;
+      --text-tertiary: #777777;
+      --accent: #ffffff;
+      --accent-dim: #888888;
+      --danger: #ff4444;
+      --success: #00cc66;
+      --radius: 16px;
+      --radius-sm: 10px;
     }
 
-    :root {
-      --bg-primary: #000000;
-      --bg-secondary: #0a0a0a;
-      --bg-tertiary: #141414;
-      --card-bg: #141414;
-      --border: #2a2a2a;
-      --border-light: #333333;
-      --text-primary: #ffffff;
-      --text-secondary: #888888;
-      --text-tertiary: #555555;
-      --accent: #ffffff;
-      --accent-dark: #cccccc;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-      background: #000000;
-      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      font-size: 14px;
     }
 
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 16px 16px 100px;
+    .splash-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; z-index: 9999;
+      transition: opacity 0.4s ease;
     }
+    .splash-content { text-align: center; }
+    .splash-logo {
+      width: 80px; height: 80px; margin: 0 auto 20px;
+      background: var(--surface2); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; border: 1px solid var(--border);
+    }
+    .splash-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); }
+    .splash-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 6px; }
+
+    .container { max-width: 480px; margin: 0 auto; padding: 16px 16px 100px; }
 
     .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border);
     }
+    .logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: var(--text-secondary); font-weight: 400; }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--text-primary);
-      color: #000;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .logo-text {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    .wallet-btn {
-      padding: 10px 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-light);
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
+    /* Profile */
     .profile-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-      text-align: center;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 16px; text-align: center;
     }
+    .profile-avatar {
+      width: 56px; height: 56px; border-radius: 50%; background: var(--surface2);
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+      margin: 0 auto 12px; border: 1px solid var(--border);
+    }
+    .profile-name { font-size: 16px; font-weight: 600; }
+    .profile-username { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 16px;
-      background: var(--bg-tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      overflow: hidden;
-      border: 2px solid var(--border-light);
+    /* Stats row */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px;
     }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px; text-align: center;
+    }
+    .stat-value { font-size: 20px; font-weight: 700; }
+    .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    /* Filters */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+    .filter-btn {
+      flex: 1; padding: 12px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text); font-size: 13px; cursor: pointer;
+      text-align: center; transition: 0.15s;
     }
+    .filter-btn:active { background: var(--surface2); }
 
-    .username {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .filter-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 16px; margin-bottom: 12px; display: none;
     }
+    .filter-panel.active { display: block; }
 
-    .telegram-handle {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
+    .filter-row { margin-bottom: 12px; }
+    .filter-label { font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 6px; text-transform: uppercase; }
+    select, input {
+      width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text); font-size: 13px; outline: none;
     }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .stat-item {
-      background: var(--bg-tertiary);
-      border-radius: 12px;
-      padding: 12px 8px;
-      border: 1px solid var(--border);
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .balance-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-
-    .balance-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .balance-value {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .balance-value .amount {
-      font-size: 40px;
-      font-weight: 800;
-    }
-
-    .balance-value .currency {
-      font-size: 16px;
-      color: var(--text-secondary);
-    }
-
-    .balance-actions {
-      display: flex;
-      gap: 12px;
-    }
+    select:focus, input:focus { border-color: var(--border-active); }
 
     .btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 14px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
+      width: 100%; padding: 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+      cursor: pointer; border: none; text-align: center; transition: 0.15s;
     }
+    .btn:active { opacity: 0.8; }
+    .btn-white { background: var(--text); color: var(--bg); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
 
-    .btn:active {
-      opacity: 0.8;
-    }
-
-    .btn-primary {
-      background: var(--text-primary);
-      color: #000;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--border-light);
-      color: var(--text-primary);
-    }
-
+    /* Tabs */
     .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 20px;
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 4px;
-      border: 1px solid var(--border);
+      display: flex; gap: 4px; margin-bottom: 16px;
+      background: var(--surface); border-radius: var(--radius); padding: 4px; border: 1px solid var(--border);
     }
-
     .tab {
-      flex: 1;
-      padding: 12px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-secondary);
+      flex: 1; padding: 12px; text-align: center; font-size: 13px; font-weight: 500;
+      border-radius: 12px; cursor: pointer; color: var(--text-secondary); transition: 0.15s;
+    }
+    .tab.active { background: var(--surface2); color: var(--text); }
+
+    /* Grid */
+    .gifts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    .gift-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px; cursor: pointer; transition: 0.15s; text-align: center;
+    }
+    .gift-card:active { border-color: var(--border-active); }
+
+    .gift-image {
+      width: 100%; aspect-ratio: 1; border-radius: var(--radius-sm);
+      background: var(--surface2); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px; font-size: 48px; border: 1px solid var(--border);
+    }
+    .gift-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm); }
+
+    .gift-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .gift-number { font-size: 11px; color: var(--text-tertiary); }
+    .gift-chars { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 6px; }
+    .char-tag {
+      font-size: 10px; padding: 2px 8px; border-radius: 20px;
+      background: var(--surface2); color: var(--text-secondary); border: 1px solid var(--border);
     }
 
-    .tab.active {
-      background: var(--text-primary);
-      color: #000;
-    }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); grid-column: span 2; }
+    .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
 
-    .filter-bar {
-      margin-bottom: 16px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .filter-toggle, .collection-toggle {
-      flex: 1;
-      padding: 12px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      font-size: 13px;
-      cursor: pointer;
-      color: var(--text-primary);
-      text-align: center;
-    }
-
-    .filter-panel, .collection-panel {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      display: none;
-      border: 1px solid var(--border);
-    }
-
-    .filter-panel.active, .collection-panel.active {
-      display: block;
-    }
-
-    .filter-group {
-      margin-bottom: 16px;
-    }
-
-    .filter-group label {
-      display: block;
-      font-size: 12px;
-      margin-bottom: 8px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .filter-group select, .filter-group input {
-      width: 100%;
-      padding: 12px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: white;
-      font-size: 14px;
-    }
-
-    .filter-group input:focus, .filter-group select:focus {
-      outline: none;
-      border-color: var(--text-secondary);
-    }
-
-    .filter-group input::placeholder {
-      color: var(--text-tertiary);
-    }
-
-    .gifts-grid, .inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .gift-card, .inventory-item {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-
-    .gift-card:active, .inventory-item:active {
-      border-color: var(--text-secondary);
-    }
-
-    .gift-image, .inv-item-image {
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 12px;
-      background: var(--bg-tertiary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .gift-image img, .inv-item-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .gift-image-placeholder {
-      font-size: 48px;
-      opacity: 0.3;
-    }
-
-    .gift-name, .inv-item-name {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .gift-number {
-      font-size: 11px;
-      color: var(--text-tertiary);
-    }
-
-    .gift-characteristics-preview {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 4px;
-      margin-top: 8px;
-      font-size: 10px;
-      color: var(--text-secondary);
-    }
-
-    .char-badge {
-      background: var(--bg-tertiary);
-      padding: 2px 8px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .exchange-selection {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
-    }
-
-    .exchange-capsules {
-      display: flex;
-      gap: 16px;
-      margin: 16px 0;
-    }
-
-    .capsule {
-      flex: 1;
-      text-align: center;
-    }
-
-    .capsule-label {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .capsule-btn {
-      width: 100%;
-      padding: 20px 12px;
-      background: var(--bg-tertiary);
-      border: 2px dashed var(--border);
-      border-radius: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .capsule-btn.selected {
-      border-color: var(--text-primary);
-      border-style: solid;
-      background: var(--card-bg);
-    }
-
-    .capsule-icon {
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-
-    .capsule-name {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .capsule-details {
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-top: 4px;
-    }
-
-    .fee-badge {
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 13px;
-      display: inline-block;
-      margin-top: 12px;
-      color: var(--text-secondary);
-    }
-
-    .gift-selector-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      max-height: 400px;
-      overflow-y: auto;
-      padding: 4px;
-    }
-
-    .gift-selector-item {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .gift-selector-item:active {
-      border-color: var(--text-primary);
-    }
-
-    .gift-selector-item.selected {
-      border-color: var(--text-primary);
-      background: var(--card-bg);
-    }
-
-    .gift-selector-icon {
-      font-size: 36px;
-      margin-bottom: 8px;
-    }
-
-    .gift-selector-name {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .gift-selector-details {
-      font-size: 10px;
-      color: var(--text-secondary);
-    }
-
+    /* Modal */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 16px;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000;
+      display: none; align-items: flex-end; justify-content: center;
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
-
+    .modal-overlay.active { display: flex; }
     .modal {
-      background: var(--card-bg);
-      border: 1px solid var(--border-light);
-      border-radius: 24px;
-      width: 100%;
-      max-width: 420px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 24px;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0;
+      width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto; padding: 20px;
     }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .modal-close { width: 32px; height: 32px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-size: 16px; }
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-image { width: 120px; height: 120px; font-size: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; background: var(--surface2); border-radius: var(--radius-sm); }
+    .modal-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm); }
+    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .detail-label { color: var(--text-secondary); }
+    .detail-value { font-weight: 500; text-align: right; max-width: 60%; }
 
-    .modal-close {
-      position: sticky;
-      top: 0;
-      float: right;
-      width: 36px;
-      height: 36px;
-      border-radius: 18px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-      margin-bottom: 16px;
+    /* Exchange */
+    .exchange-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+    .exchange-pair { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .exchange-slot {
+      flex: 1; padding: 14px; background: var(--surface2); border: 1px dashed var(--border);
+      border-radius: var(--radius-sm); text-align: center; cursor: pointer; min-height: 60px;
+      display: flex; flex-direction: column; justify-content: center;
     }
-
-    .modal-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .modal-gift-image {
-      width: 120px;
-      height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      background: var(--bg-tertiary);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .modal-gift-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .modal-gift-image .placeholder {
-      font-size: 60px;
-      opacity: 0.3;
-    }
-
-    .modal-characteristics {
-      background: var(--bg-tertiary);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-    }
-
-    .char-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-
-    .char-item:last-child {
-      border-bottom: none;
-    }
-
-    .char-label {
-      color: var(--text-secondary);
-    }
-
-    .char-value {
-      font-weight: 500;
-    }
-
-    .char-percent {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-left: 8px;
-    }
-
-    .owner-section {
-      background: var(--bg-tertiary);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
-    }
-
-    .owner-title {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-
-    .owner-value {
-      font-size: 14px;
-      word-break: break-all;
-    }
-
-    .issued-section {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding: 12px;
-      background: var(--bg-tertiary);
-      border-radius: 14px;
-      font-size: 13px;
-    }
-
-    .issued-label {
-      color: var(--text-secondary);
-    }
-
-    .issued-value {
-      font-weight: 600;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-    }
-
-    .orders-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .exchange-slot.selected { border-color: var(--accent-dim); border-style: solid; }
+    .exchange-arrow { font-size: 20px; color: var(--text-secondary); }
+    .exchange-slot-name { font-size: 13px; font-weight: 600; }
+    .exchange-slot-detail { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .fee-info { font-size: 12px; color: var(--text-secondary); text-align: center; margin-bottom: 12px; }
 
     .order-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px; margin-bottom: 10px;
     }
-
-    .order-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .order-user {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    .order-status {
-      font-size: 11px;
-      padding: 4px 12px;
-      border-radius: 8px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .order-items {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
+    .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
+    .order-items { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .order-item {
-      flex: 1;
-      text-align: center;
-      padding: 12px;
-      background: var(--bg-tertiary);
-      border-radius: 14px;
-      border: 1px solid var(--border);
+      flex: 1; text-align: center; padding: 10px; background: var(--surface2);
+      border-radius: var(--radius-sm); font-size: 12px;
     }
+    .order-item-name { font-weight: 600; }
 
-    .order-item-icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-
-    .order-item-name {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .order-item-detail {
-      font-size: 10px;
-      color: var(--text-secondary);
-    }
-
-    .order-arrow {
-      font-size: 24px;
-    }
-
-    .order-actions {
-      margin-top: 12px;
-    }
-
-    .btn-sm {
-      width: 100%;
-      padding: 12px;
-      font-size: 13px;
-      border-radius: 12px;
-      font-weight: 600;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-      background: var(--card-bg);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-    }
-
-    .empty-state-icon {
-      font-size: 60px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
+    /* Bottom nav */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #000;
-      border-top: 1px solid var(--border);
-      padding: 8px 16px 16px;
-      z-index: 100;
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
+      border-top: 1px solid var(--border); padding: 8px 16px 16px; z-index: 100;
     }
-
-    .nav-inner {
-      display: flex;
-      justify-content: space-around;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
+    .nav-inner { display: flex; justify-content: space-around; max-width: 480px; margin: 0 auto; }
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-secondary);
-      font-size: 11px;
-      cursor: pointer;
-      padding: 8px 16px;
-      border-radius: 12px;
-      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      cursor: pointer; color: var(--text-secondary); font-size: 11px; padding: 6px 16px;
+      border-radius: 20px; transition: 0.15s;
     }
-
-    .nav-item.active {
-      color: var(--text-primary);
-    }
-
-    .nav-icon {
-      font-size: 22px;
-    }
+    .nav-item.active { color: var(--text); background: var(--surface2); }
 
     .toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--card-bg);
-      color: white;
-      padding: 14px 24px;
-      border-radius: 14px;
-      font-size: 14px;
-      z-index: 2000;
-      border: 1px solid var(--border-light);
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: var(--surface); color: var(--text); padding: 12px 24px;
+      border-radius: 30px; font-size: 13px; z-index: 2000; border: 1px solid var(--border);
       white-space: nowrap;
     }
 
-    .loading-spinner {
-      width: 32px;
-      height: 32px;
-      border: 2px solid var(--border);
-      border-top-color: var(--text-primary);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 16px auto;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border-light);
-      border-radius: 4px;
-    }
-
-    .filter-selector-title {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .filter-selector select {
-      width: 100%;
-      padding: 12px;
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: white;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
+    .loading { text-align: center; padding: 40px; color: var(--text-secondary); grid-column: span 2; }
   </style>
 </head>
 <body>
 
-<div class="container" id="appContainer">
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-content">
+    <div class="splash-logo">◈</div>
+    <div class="splash-title">Bramls</div>
+    <div class="splash-subtitle">NFT Marketplace</div>
+  </div>
+</div>
+
+<div class="container" style="display:none" id="appContainer">
+
   <div class="header">
-    <div class="logo">
-      <div class="logo-icon">B</div>
-      <div class="logo-text">Bramls</div>
-    </div>
-    <div class="wallet-btn" id="walletBtn">
-      <span id="walletAddress">TON</span>
-    </div>
+    <div class="logo">Bramls <span>NFT</span></div>
   </div>
 
-  <div class="profile-card" id="profileCard" style="display: none;">
-    <div class="avatar" id="userAvatar"><span>👤</span></div>
-    <div class="username" id="userName">Загрузка...</div>
-    <div class="telegram-handle" id="userHandle">@username</div>
-    <div class="stats-grid">
-      <div class="stat-item"><div class="stat-value" id="totalGifts">0</div><div class="stat-label">Подарков</div></div>
-      <div class="stat-item"><div class="stat-value" id="totalExchanges">0</div><div class="stat-label">Обменов</div></div>
-      <div class="stat-item"><div class="stat-value" id="completionRate">0</div><div class="stat-label">NFT в БД</div></div>
-    </div>
+  <div class="profile-card" id="profileCard">
+    <div class="profile-avatar" id="profileAvatar">◈</div>
+    <div class="profile-name" id="profileName">—</div>
+    <div class="profile-username" id="profileUsername">—</div>
   </div>
 
-  <div class="balance-card">
-    <div class="balance-label">Баланс</div>
-    <div class="balance-value"><span class="amount" id="tonBalance">0.00</span><span class="currency">TON</span></div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-value" id="statGifts">0</div><div class="stat-label">NFT в базе</div></div>
+    <div class="stat-card"><div class="stat-value" id="statInventory">0</div><div class="stat-label">В инвентаре</div></div>
   </div>
 
   <div class="filter-bar">
-    <button class="collection-toggle" id="collectionToggleBtn">📁 Коллекции</button>
-    <button class="filter-toggle" id="filterToggleBtn">🔍 Фильтры</button>
+    <button class="filter-btn" id="collectionToggleBtn">Коллекции</button>
+    <button class="filter-btn" id="filterToggleBtn">Фильтры</button>
   </div>
 
-  <div class="collection-panel" id="collectionPanel">
-    <div class="filter-group">
-      <label>Выберите коллекцию</label>
+  <div class="filter-panel" id="collectionPanel">
+    <div class="filter-row">
+      <label class="filter-label">Коллекция</label>
       <select id="collectionSelect"><option value="">Все коллекции</option></select>
     </div>
-    <button class="btn btn-primary" id="applyCollectionBtn">Применить</button>
+    <button class="btn btn-white" id="applyCollectionBtn" style="margin-top:8px">Применить</button>
   </div>
 
   <div class="filter-panel" id="filterPanel">
-    <div class="filter-group"><label>Название подарка</label><input type="text" id="filterGiftName" placeholder="Например: Heart Locket"></div>
-    <div class="filter-group"><label>Модель</label><input type="text" id="filterModel" placeholder="Например: Ramune"></div>
-    <div class="filter-group"><label>Фон</label><input type="text" id="filterBackground" placeholder="Например: Onyx Black"></div>
-    <div class="filter-group"><label>Узор / Символ</label><input type="text" id="filterPattern" placeholder="Например: Illuminati"></div>
-    <button class="btn btn-primary" id="applyFiltersBtn">Применить фильтры</button>
+    <div class="filter-row"><label class="filter-label">Название</label><input type="text" id="filterName" placeholder="Heart Locket..."></div>
+    <div class="filter-row"><label class="filter-label">Модель</label><input type="text" id="filterModel" placeholder="Ramune..."></div>
+    <div class="filter-row"><label class="filter-label">Фон</label><input type="text" id="filterBackground" placeholder="Onyx Black..."></div>
+    <div class="filter-row"><label class="filter-label">Узор</label><input type="text" id="filterPattern" placeholder="Illuminati..."></div>
+    <button class="btn btn-white" id="applyFiltersBtn" style="margin-top:8px">Применить</button>
   </div>
 
   <div class="tabs">
@@ -907,828 +273,319 @@
     <div class="tab" data-tab="exchange">Обмен</div>
   </div>
 
-  <div id="marketTab"><div id="giftsGrid" class="gifts-grid"><div class="loading"><div class="loading-spinner"></div><div>Загрузка...</div></div></div></div>
-  <div id="inventoryTab" style="display: none;"><div id="inventoryGrid" class="inventory-grid"><div class="loading"><div class="loading-spinner"></div><div>Загрузка...</div></div></div></div>
-  <div id="exchangeTab" style="display: none;">
-    <div class="exchange-selection">
-      <div class="exchange-capsules">
-        <div class="capsule">
-          <div class="capsule-label">Ваш подарок</div>
-          <div class="capsule-btn" id="selectOfferBtn">
-            <div class="capsule-icon">🎁</div>
-            <div class="capsule-name" id="selectedOfferName">Выберите</div>
-            <div class="capsule-details" id="selectedOfferDetails"></div>
-          </div>
+  <div id="marketTab"><div class="gifts-grid" id="giftsGrid"><div class="loading">Загрузка...</div></div></div>
+  <div id="inventoryTab" style="display:none"><div class="gifts-grid" id="inventoryGrid"><div class="loading">Загрузка...</div></div></div>
+  <div id="exchangeTab" style="display:none">
+    <div class="exchange-box">
+      <div class="exchange-pair">
+        <div class="exchange-slot" id="offerSlot" onclick="openSelector('offer')">
+          <div class="exchange-slot-name" id="offerName">Ваш NFT</div>
+          <div class="exchange-slot-detail" id="offerDetail">Нажмите чтобы выбрать</div>
         </div>
-        <div class="capsule">
-          <div class="capsule-label">Желаемый</div>
-          <div class="capsule-btn" id="selectWantBtn">
-            <div class="capsule-icon">✨</div>
-            <div class="capsule-name" id="selectedWantName">Выберите</div>
-            <div class="capsule-details" id="selectedWantDetails"></div>
-          </div>
+        <div class="exchange-arrow">→</div>
+        <div class="exchange-slot" id="wantSlot" onclick="openSelector('want')">
+          <div class="exchange-slot-name" id="wantName">Желаемый NFT</div>
+          <div class="exchange-slot-detail" id="wantDetail">Нажмите чтобы выбрать</div>
         </div>
       </div>
-      <div class="fee-badge">Комиссия: 0.1 TON</div>
-      <button class="btn btn-primary" id="createOrderBtn" style="margin-top: 16px; width: 100%;">Создать заявку на обмен</button>
+      <div class="fee-info">Комиссия: 0.1 TON</div>
+      <button class="btn btn-white" id="createOrderBtn">Создать заявку</button>
     </div>
-    <div class="tabs" style="margin-top: 8px;">
-      <div class="tab active" data-exchange-tab="open">Открытые</div>
-      <div class="tab" data-exchange-tab="my">Мои заявки</div>
+    <div class="tabs" style="margin-top:8px">
+      <div class="tab active" data-ex-tab="open">Открытые</div>
+      <div class="tab" data-ex-tab="my">Мои</div>
     </div>
-    <div id="ordersList" class="orders-list"><div class="loading"><div class="loading-spinner"></div><div>Загрузка...</div></div></div>
+    <div id="ordersList"></div>
   </div>
 </div>
 
 <nav class="bottom-nav">
   <div class="nav-inner">
-    <div class="nav-item active" data-page="market"><span class="nav-icon">🎁</span><span>Маркет</span></div>
-    <div class="nav-item" data-page="inventory"><span class="nav-icon">📦</span><span>Инвентарь</span></div>
-    <div class="nav-item" data-page="exchange"><span class="nav-icon">🔄</span><span>Обмен</span></div>
+    <div class="nav-item active" data-page="market">Маркет</div>
+    <div class="nav-item" data-page="inventory">Инвентарь</div>
+    <div class="nav-item" data-page="exchange">Обмен</div>
   </div>
 </nav>
 
 <div class="modal-overlay" id="giftModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('giftModal')">✕</button>
-    <div class="modal-title" id="giftModalTitle">NFT</div>
-    <div class="modal-gift-image" id="giftModalImage"><span class="placeholder">🎁</span></div>
-    <div class="owner-section" id="giftModalOwner"></div>
-    <div class="issued-section" id="giftModalIssued"></div>
-    <div class="modal-characteristics" id="giftModalChars"></div>
-    <div class="modal-buttons"><button class="btn btn-primary" onclick="closeModal('giftModal')" style="width:100%">Закрыть</button></div>
+    <div class="modal-header">
+      <div class="modal-title" id="giftModalTitle">NFT</div>
+      <button class="modal-close" onclick="closeModal('giftModal')">✕</button>
+    </div>
+    <div class="modal-image" id="giftModalImage">◈</div>
+    <div id="giftModalDetails"></div>
+    <button class="btn btn-outline" onclick="closeModal('giftModal')" style="margin-top:16px">Закрыть</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="giftSelectorModal">
+<div class="modal-overlay" id="selectorModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('giftSelectorModal')">✕</button>
-    <div class="modal-title" id="giftSelectorTitle">Выберите подарок</div>
-    <div id="giftSelectorFilters"></div>
-    <div id="giftSelectorGrid" class="gift-selector-grid"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="selectorTitle">Выбор NFT</div>
+      <button class="modal-close" onclick="closeModal('selectorModal')">✕</button>
+    </div>
+    <div class="gifts-grid" id="selectorGrid"></div>
   </div>
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+  const tg = window.Telegram.WebApp;
+  tg.ready(); tg.expand();
 
-    let currentUser = null;
-    let currentUserId = null;
-    let allGifts = [];
-    let inventory = [];
-    let openOrders = [];
-    let myOrders = [];
-    let currentTab = 'market';
-    let selectedOfferGift = null;
-    let selectedWantGift = null;
-    let exchangeTab = 'open';
-    let collections = [];
-    let filterOptions = { models: [], backgrounds: [], patterns: [] };
+  let userId = tg.initDataUnsafe?.user?.id || null;
+  let allGifts = [], inventory = [], collections = [];
+  let openOrders = [], myOrders = [];
+  let offerGift = null, wantGift = null;
+  let currentExTab = 'open';
 
-    const initData = tg.initDataUnsafe;
-    if (initData && initData.user) {
-      currentUserId = initData.user.id;
-    }
+  setTimeout(() => {
+    document.getElementById('splashScreen').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('splashScreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'block';
+    }, 400);
+  }, 1200);
 
-    // Отправка данных через Telegram WebApp
-    function sendToBot(action, data = {}) {
-      return new Promise((resolve, reject) => {
-        try {
-          const payload = {
-            action: action,
-            data: data
-          };
-          tg.sendData(JSON.stringify(payload));
-          // WebApp.sendData не возвращает ответ напрямую,
-          // поэтому используем альтернативный подход через fetch к нашему боту
-          resolve({ success: true });
-        } catch (e) {
-          reject(e);
-        }
+  // API
+  async function api(action, data = {}) {
+    try {
+      const r = await fetch('/api', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action, data, userId})
       });
+      return await r.json();
+    } catch(e) { return {success:false, error:'Connection error'}; }
+  }
+
+  // Loaders
+  async function init() {
+    const [profile, col, gifts, inv, orders] = await Promise.all([
+      api('get_user_profile'),
+      api('get_collections'),
+      api('filter_gifts'),
+      api('get_inventory'),
+      api('get_orders')
+    ]);
+    if (profile.success && profile.user) {
+      document.getElementById('profileName').textContent = profile.user.firstName || 'User';
+      document.getElementById('profileUsername').textContent = profile.user.telegramUsername ? '@'+profile.user.telegramUsername : '';
     }
-
-    // Прямой вызов к боту через Telegram WebApp API
-    function callBotApi(action, data = {}) {
-      return new Promise((resolve) => {
-        const requestId = Date.now() + Math.random();
-        const payload = {
-          action: action,
-          data: data,
-          requestId: requestId
-        };
-        
-        // Используем CloudStorage как временное хранилище для симуляции API
-        tg.CloudStorage.setItem('api_request', JSON.stringify(payload));
-        tg.sendData(JSON.stringify(payload));
-        
-        // Ждем ответ через showPopup или другой механизм
-        setTimeout(() => {
-          resolve({ success: false, error: 'timeout' });
-        }, 10000);
-      });
+    if (col.success) {
+      collections = col.collections || [];
+      const sel = document.getElementById('collectionSelect');
+      sel.innerHTML = '<option value="">Все коллекции</option>' + collections.map(c => `<option value="${c.id}">${c.name} (${c.totalFound})</option>`).join('');
     }
+    if (gifts.success) { allGifts = gifts.gifts || []; renderMarket(); }
+    document.getElementById('statGifts').textContent = gifts.total || 0;
+    if (inv.success) { inventory = inv.inventory || []; renderInventory(); }
+    document.getElementById('statInventory').textContent = inv.total || 0;
+    if (orders.success) { openOrders = orders.openOrders || []; myOrders = orders.myOrders || []; renderOrders(); }
+  }
 
-    function showToast(msg, type = 'info') {
-      tg.showPopup({
-        title: type === 'error' ? 'Ошибка' : 'Информация',
-        message: msg,
-        buttons: [{ type: 'close' }]
-      });
+  // Render market
+  function renderMarket() {
+    const c = document.getElementById('giftsGrid');
+    if (!allGifts.length) {
+      c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">◈</div><div>Нет NFT в базе</div><div style="font-size:11px;margin-top:4px;color:var(--text-tertiary)">Парсер собирает данные...</div></div>';
+      return;
     }
+    c.innerHTML = allGifts.map(g => `
+      <div class="gift-card" onclick="openGiftModal(${g.id})">
+        <div class="gift-image"><img src="${g.previewUrl || g.imageUrl}" onerror="this.parentElement.innerHTML='◈'" alt="${g.name}"></div>
+        <div class="gift-name">${esc(g.name)}</div>
+        <div class="gift-number">#${g.giftId}</div>
+        <div class="gift-chars">
+          ${g.model ? `<span class="char-tag">${esc(g.model)}</span>` : ''}
+          ${g.background ? `<span class="char-tag">${esc(g.background)}</span>` : ''}
+          ${g.pattern ? `<span class="char-tag">${esc(g.pattern)}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
 
-    function showConfirm(msg, callback) {
-      tg.showPopup({
-        title: 'Подтверждение',
-        message: msg,
-        buttons: [
-          { id: 'confirm', type: 'ok', text: 'Да' },
-          { id: 'cancel', type: 'cancel', text: 'Нет' }
-        ]
-      }, (btnId) => {
-        if (btnId === 'confirm') callback();
-      });
+  // Render inventory
+  function renderInventory() {
+    const c = document.getElementById('inventoryGrid');
+    if (!inventory.length) {
+      c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div>Инвентарь пуст</div></div>';
+      return;
     }
+    c.innerHTML = inventory.map(i => `
+      <div class="gift-card" onclick="openGiftModal(${i.nftId})">
+        <div class="gift-image"><img src="${i.imageUrl}" onerror="this.parentElement.innerHTML='◈'"></div>
+        <div class="gift-name">${esc(i.name)}</div>
+        <div class="gift-chars">
+          ${i.model ? `<span class="char-tag">${esc(i.model)}</span>` : ''}
+          ${i.background ? `<span class="char-tag">${esc(i.background)}</span>` : ''}
+          ${i.pattern ? `<span class="char-tag">${esc(i.pattern)}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
 
-    async function loadData() {
-      await Promise.all([
-        loadCollections(),
-        loadFilterOptions(),
-        loadUserProfile(),
-        loadAllGifts(),
-        loadInventory(),
-        loadOrders(),
-        loadStatistics()
-      ]);
-    }
+  // Gift modal
+  function openGiftModal(id) {
+    const gift = allGifts.find(g => g.id === id) || inventory.find(i => i.nftId === id);
+    if (!gift) return;
+    document.getElementById('giftModalTitle').textContent = `${gift.name} #${gift.giftId || ''}`;
+    document.getElementById('giftModalImage').innerHTML = `<img src="${gift.previewUrl || gift.imageUrl}" onerror="this.innerHTML='◈'" style="width:100%;height:100%;object-fit:cover;border-radius:12px">`;
+    let details = '';
+    if (gift.model) details += `<div class="detail-row"><span class="detail-label">Модель</span><span class="detail-value">${esc(gift.model)}${gift.modelPercent ? ` (${gift.modelPercent}%)` : ''}</span></div>`;
+    if (gift.background) details += `<div class="detail-row"><span class="detail-label">Фон</span><span class="detail-value">${esc(gift.background)}${gift.backgroundPercent ? ` (${gift.backgroundPercent}%)` : ''}</span></div>`;
+    if (gift.pattern) details += `<div class="detail-row"><span class="detail-label">Узор</span><span class="detail-value">${esc(gift.pattern)}${gift.patternPercent ? ` (${gift.patternPercent}%)` : ''}</span></div>`;
+    if (gift.owner) details += `<div class="detail-row"><span class="detail-label">Владелец</span><span class="detail-value">${esc(gift.owner)}</span></div>`;
+    if (gift.issuedCount) details += `<div class="detail-row"><span class="detail-label">Выпущено</span><span class="detail-value">${gift.issuedCount} / ${gift.totalCount}</span></div>`;
+    document.getElementById('giftModalDetails').innerHTML = details || '<div class="detail-row">Нет данных</div>';
+    openModal('giftModal');
+  }
 
-    async function loadCollections() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_collections', data: {} }));
-        // Ждем обновления от бота
-        setTimeout(async () => {
-          const res = await fetchCollectionsFromStorage();
-          if (res && res.success) {
-            collections = res.collections || [];
-            updateCollectionSelect();
-          }
-        }, 500);
-      } catch (e) {
-        console.error('loadCollections error:', e);
-      }
-    }
-
-    async function fetchCollectionsFromStorage() {
-      return new Promise((resolve) => {
-        tg.CloudStorage.getItem('collections_data', (err, value) => {
-          if (!err && value) {
-            try { resolve(JSON.parse(value)); } catch (e) { resolve(null); }
-          } else {
-            resolve(null);
-          }
-        });
-      });
-    }
-
-    async function loadFilterOptions() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_filter_options', data: {} }));
-      } catch (e) {
-        console.error('loadFilterOptions error:', e);
-      }
-    }
-
-    async function loadUserProfile() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_user_profile', data: {} }));
-        // Используем данные из initData
-        if (initData && initData.user) {
-          currentUser = {
-            id: initData.user.id,
-            firstName: initData.user.first_name,
-            username: initData.user.username || '',
-            telegramUsername: initData.user.username || '',
-            balance: 0,
-            inventorySize: 0,
-            avatarFileId: null
-          };
-          updateProfileUI();
-        }
-      } catch (e) {
-        console.error('loadUserProfile error:', e);
-      }
-    }
-
-    function updateProfileUI() {
-      if (!currentUser) return;
-      document.getElementById('userName').textContent = currentUser.firstName || 'Пользователь';
-      document.getElementById('userHandle').textContent = currentUser.telegramUsername ? '@' + currentUser.telegramUsername : '@user';
-      document.getElementById('profileCard').style.display = 'block';
-      
-      if (initData && initData.user && initData.user.photo_url) {
-        document.getElementById('userAvatar').innerHTML = `<img src="${initData.user.photo_url}" alt="avatar">`;
-      }
-    }
-
-    async function loadAllGifts() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_all_gifts', data: {} }));
-        // Загружаем из localStorage для демонстрации
-        const cached = localStorage.getItem('bramls_gifts');
-        if (cached) {
-          try {
-            const parsed = JSON.parse(cached);
-            if (parsed.success && parsed.gifts) {
-              allGifts = parsed.gifts;
-              renderGifts();
-            }
-          } catch (e) {}
-        }
-      } catch (e) {
-        console.error('loadAllGifts error:', e);
-      }
-    }
-
-    async function loadGiftsByCollection(collectionId) {
-      try {
-        tg.sendData(JSON.stringify({ 
-          action: 'get_gifts_by_collection', 
-          data: { collectionId: collectionId } 
-        }));
-      } catch (e) {
-        console.error('loadGiftsByCollection error:', e);
-      }
-    }
-
-    async function filterGifts(filters) {
-      try {
-        tg.sendData(JSON.stringify({ 
-          action: 'filter_gifts', 
-          data: filters 
-        }));
-      } catch (e) {
-        console.error('filterGifts error:', e);
-      }
-    }
-
-    function renderGifts() {
-      const container = document.getElementById('giftsGrid');
-      if (!allGifts || !allGifts.length) {
-        container.innerHTML = `
-          <div class="empty-state" style="grid-column: span 2;">
-            <div class="empty-state-icon">🎁</div>
-            <div>Нет доступных NFT</div>
-            <div style="font-size: 12px; margin-top: 8px; color: var(--text-tertiary);">
-              Парсер собирает данные. Подождите или обновите страницу.
-            </div>
-          </div>`;
-        return;
-      }
-
-      container.innerHTML = allGifts.slice(0, 100).map(g => `
-        <div class="gift-card" onclick="openGiftModal(${g.id})">
-          <div class="gift-image">
-            ${g.previewUrl || g.imageUrl 
-              ? `<img src="${g.previewUrl || g.imageUrl}" alt="${g.name}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=\\'gift-image-placeholder\\'>🎁</span>'">` 
-              : '<span class="gift-image-placeholder">🎁</span>'}
-          </div>
-          <div class="gift-name">${escapeHtml(g.name)} <span class="gift-number">#${g.giftId}</span></div>
-          <div class="gift-characteristics-preview">
-            ${g.model ? `<span class="char-badge">M: ${escapeHtml(g.model.substring(0, 12))}${g.model.length > 12 ? '..' : ''}</span>` : ''}
-            ${g.background ? `<span class="char-badge">B: ${escapeHtml(g.background.substring(0, 12))}${g.background.length > 12 ? '..' : ''}</span>` : ''}
-            ${g.pattern ? `<span class="char-badge">P: ${escapeHtml(g.pattern.substring(0, 12))}${g.pattern.length > 12 ? '..' : ''}</span>` : ''}
-          </div>
-          ${g.issuedCount ? `<div style="font-size: 10px; color: var(--text-tertiary); margin-top: 6px;">${g.issuedCount}/${g.totalCount}</div>` : ''}
+  // Selector
+  function openSelector(type) {
+    document.getElementById('selectorTitle').textContent = type === 'offer' ? 'Ваш NFT (из инвентаря)' : 'Желаемый NFT (из маркета)';
+    const items = type === 'offer' ? inventory : allGifts;
+    const grid = document.getElementById('selectorGrid');
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:span 2">Нет доступных NFT</div>';
+    } else {
+      grid.innerHTML = items.slice(0, 60).map(i => `
+        <div class="gift-card" onclick="selectGift('${type}', ${type==='offer' ? i.nftId : i.id})">
+          <div class="gift-image"><img src="${i.previewUrl || i.imageUrl}" onerror="this.parentElement.innerHTML='◈'"></div>
+          <div class="gift-name">${esc(i.name)}</div>
+          <div class="gift-number">#${i.giftId || ''}</div>
         </div>
       `).join('');
     }
+    window._selectorType = type;
+    openModal('selectorModal');
+  }
 
-    async function loadInventory() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_inventory', data: {} }));
-      } catch (e) {
-        console.error('loadInventory error:', e);
-      }
+  function selectGift(type, id) {
+    const gift = type === 'offer' ? inventory.find(i => i.nftId === id) : allGifts.find(g => g.id === id);
+    if (!gift) return;
+    if (type === 'offer') {
+      offerGift = gift;
+      document.getElementById('offerName').textContent = gift.name;
+      document.getElementById('offerDetail').textContent = [gift.model, gift.background, gift.pattern].filter(Boolean).join(' / ') || '—';
+      document.getElementById('offerSlot').classList.add('selected');
+    } else {
+      wantGift = gift;
+      document.getElementById('wantName').textContent = `${gift.name} #${gift.giftId}`;
+      document.getElementById('wantDetail').textContent = [gift.model, gift.background, gift.pattern].filter(Boolean).join(' / ') || '—';
+      document.getElementById('wantSlot').classList.add('selected');
     }
+    closeModal('selectorModal');
+  }
 
-    function renderInventory() {
-      const container = document.getElementById('inventoryGrid');
-      if (!inventory || !inventory.length) {
-        container.innerHTML = `
-          <div class="empty-state" style="grid-column: span 2;">
-            <div class="empty-state-icon">📦</div>
-            <div>Инвентарь пуст</div>
-            <div style="font-size: 12px; margin-top: 8px;">Совершайте обмены чтобы пополнить коллекцию!</div>
-          </div>`;
-        return;
-      }
-      container.innerHTML = inventory.slice(0, 100).map(i => `
-        <div class="inventory-item" onclick="openGiftModal(${i.nftId})">
-          <div class="inv-item-image">
-            ${i.imageUrl 
-              ? `<img src="${i.imageUrl}" alt="${i.name}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=\\'gift-image-placeholder\\'>🎁</span>'">` 
-              : '<span class="gift-image-placeholder">🎁</span>'}
-          </div>
-          <div class="inv-item-name">${escapeHtml(i.name)}</div>
-          <div class="gift-characteristics-preview">
-            ${i.model ? `<span class="char-badge">M: ${escapeHtml(i.model.substring(0, 10))}${i.model.length > 10 ? '..' : ''}</span>` : ''}
-            ${i.background ? `<span class="char-badge">B: ${escapeHtml(i.background.substring(0, 10))}${i.background.length > 10 ? '..' : ''}</span>` : ''}
-            ${i.pattern ? `<span class="char-badge">P: ${escapeHtml(i.pattern.substring(0, 10))}${i.pattern.length > 10 ? '..' : ''}</span>` : ''}
-          </div>
+  // Orders
+  async function createOrder() {
+    if (!offerGift || !wantGift) return toast('Выберите оба NFT');
+    const r = await api('create_exchange', {offerId: offerGift.nftId, wantId: wantGift.id});
+    if (r.success) {
+      toast('Заявка создана');
+      offerGift = wantGift = null;
+      document.getElementById('offerName').textContent = 'Ваш NFT';
+      document.getElementById('offerDetail').textContent = 'Нажмите чтобы выбрать';
+      document.getElementById('wantName').textContent = 'Желаемый NFT';
+      document.getElementById('wantDetail').textContent = 'Нажмите чтобы выбрать';
+      document.getElementById('offerSlot').classList.remove('selected');
+      document.getElementById('wantSlot').classList.remove('selected');
+      await refreshExchange();
+    } else toast(r.error || 'Ошибка');
+  }
+
+  async function acceptOrder(id) {
+    const r = await api('accept_exchange', {orderId: id});
+    if (r.success) { toast('Обмен выполнен'); await refreshExchange(); await refreshInventory(); }
+    else toast(r.error || 'Ошибка');
+  }
+
+  function renderOrders() {
+    const orders = currentExTab === 'open' ? openOrders : myOrders;
+    const c = document.getElementById('ordersList');
+    if (!orders.length) {
+      c.innerHTML = '<div class="empty-state" style="grid-column:span 1"><div>Нет заявок</div></div>';
+      return;
+    }
+    c.innerHTML = orders.map(o => `
+      <div class="order-card">
+        <div class="order-header"><span>${esc(o.userName)}</span><span>${o.status}</span></div>
+        <div class="order-items">
+          <div class="order-item"><div class="order-item-name">${esc(o.offerGiftName)}</div><div style="font-size:10px;color:var(--text-tertiary)">${[o.offerModel,o.offerBackground,o.offerPattern].filter(Boolean).join(' / ')||''}</div></div>
+          <div>→</div>
+          <div class="order-item"><div class="order-item-name">${esc(o.wantGiftName)}</div></div>
         </div>
-      `).join('');
-    }
+        ${currentExTab === 'open' && o.userId !== userId ? `<button class="btn btn-white" onclick="acceptOrder(${o.id})" style="margin-top:8px">Принять (0.1 TON)</button>` : ''}
+      </div>
+    `).join('');
+  }
 
-    async function loadOrders() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_orders', data: {} }));
-      } catch (e) {
-        console.error('loadOrders error:', e);
-      }
-    }
+  async function refreshExchange() {
+    const r = await api('get_orders');
+    if (r.success) { openOrders = r.openOrders || []; myOrders = r.myOrders || []; renderOrders(); }
+  }
+  async function refreshInventory() {
+    const r = await api('get_inventory');
+    if (r.success) { inventory = r.inventory || []; renderInventory(); document.getElementById('statInventory').textContent = r.total || 0; }
+  }
 
-    async function loadStatistics() {
-      try {
-        tg.sendData(JSON.stringify({ action: 'get_statistics', data: {} }));
-        // Получаем статистику
-        setTimeout(() => {
-          tg.CloudStorage.getItem('statistics_data', (err, value) => {
-            if (!err && value) {
-              try {
-                const stats = JSON.parse(value);
-                if (stats.totalNFTs) {
-                  document.getElementById('completionRate').textContent = stats.totalNFTs;
-                }
-                if (stats.totalExchanges) {
-                  document.getElementById('totalExchanges').textContent = stats.totalExchanges;
-                }
-              } catch (e) {}
-            }
-          });
-        }, 1000);
-      } catch (e) {
-        console.error('loadStatistics error:', e);
-      }
-    }
-
-    function renderOrders() {
-      const container = document.getElementById('ordersList');
-      let orders = exchangeTab === 'open' ? openOrders : myOrders;
-      
-      if (!orders || !orders.length) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">🔄</div>
-            <div>Нет активных заявок</div>
-          </div>`;
-        return;
-      }
-      
-      container.innerHTML = orders.map(o => `
-        <div class="order-card">
-          <div class="order-header">
-            <span class="order-user">👤 ${escapeHtml(o.userName || 'Пользователь')}</span>
-            <span class="order-status">${o.status === 'open' ? 'Открыта' : 'Завершена'}</span>
-          </div>
-          <div class="order-items">
-            <div class="order-item">
-              <div class="order-item-icon">🎁</div>
-              <div class="order-item-name">${escapeHtml(o.offerGiftName || 'NFT')}</div>
-              <div class="order-item-detail">
-                ${o.offerModel ? `<span>${escapeHtml(o.offerModel)}</span>` : ''}
-                ${o.offerBackground ? `<span>${escapeHtml(o.offerBackground)}</span>` : ''}
-                ${o.offerPattern ? `<span>${escapeHtml(o.offerPattern)}</span>` : ''}
-              </div>
-            </div>
-            <div class="order-arrow">→</div>
-            <div class="order-item">
-              <div class="order-item-icon">✨</div>
-              <div class="order-item-name">${escapeHtml(o.wantGiftName || 'NFT')}</div>
-            </div>
-          </div>
-          ${exchangeTab === 'open' && o.userId !== currentUserId ? 
-            `<div class="order-actions"><button class="btn-sm btn-primary" onclick="acceptExchange(${o.id})">Принять обмен (0.1 TON)</button></div>` : ''}
-        </div>
-      `).join('');
-    }
-
-    function openGiftModal(giftId) {
-      const gift = allGifts.find(g => g.id == giftId) || inventory.find(i => i.nftId == giftId);
-      if (!gift) {
-        showToast('Подарок не найден', 'error');
-        return;
-      }
-      
-      document.getElementById('giftModalTitle').textContent = `${gift.name} #${gift.giftId || ''}`;
-      
-      const imgContainer = document.getElementById('giftModalImage');
-      if (gift.imageUrl) {
-        imgContainer.innerHTML = `<img src="${gift.imageUrl}" alt="${gift.name}" onerror="this.parentElement.innerHTML='<span class=\\'placeholder\\'>🎁</span>'">`;
-      } else if (gift.previewUrl) {
-        imgContainer.innerHTML = `<img src="${gift.previewUrl}" alt="${gift.name}" onerror="this.parentElement.innerHTML='<span class=\\'placeholder\\'>🎁</span>'">`;
-      } else {
-        imgContainer.innerHTML = '<span class="placeholder">🎁</span>';
-      }
-      
-      const ownerHtml = gift.owner 
-        ? `<div class="owner-title">Владелец</div><div class="owner-value">${escapeHtml(gift.owner)}${gift.ownerUsername ? ` (@${escapeHtml(gift.ownerUsername)})` : ''}</div>`
-        : '<div class="owner-title">Владелец</div><div class="owner-value">Не указан</div>';
-      document.getElementById('giftModalOwner').innerHTML = ownerHtml;
-      
-      if (gift.issuedCount && gift.totalCount) {
-        document.getElementById('giftModalIssued').innerHTML = 
-          `<div><span class="issued-label">Выпущено:</span> <span class="issued-value">${gift.issuedCount} / ${gift.totalCount}</span></div>`;
-      } else {
-        document.getElementById('giftModalIssued').innerHTML = '';
-      }
-      
-      let charsHtml = '';
-      if (gift.model) {
-        charsHtml += `<div class="char-item"><span class="char-label">Модель</span><span class="char-value">${escapeHtml(gift.model)}${gift.modelPercent ? `<span class="char-percent">${gift.modelPercent}%</span>` : ''}</span></div>`;
-      }
-      if (gift.background) {
-        charsHtml += `<div class="char-item"><span class="char-label">Фон</span><span class="char-value">${escapeHtml(gift.background)}${gift.backgroundPercent ? `<span class="char-percent">${gift.backgroundPercent}%</span>` : ''}</span></div>`;
-      }
-      if (gift.pattern) {
-        charsHtml += `<div class="char-item"><span class="char-label">Узор</span><span class="char-value">${escapeHtml(gift.pattern)}${gift.patternPercent ? `<span class="char-percent">${gift.patternPercent}%</span>` : ''}</span></div>`;
-      }
-      if (gift.characteristics) {
-        Object.entries(gift.characteristics).forEach(([k, v]) => {
-          if (!['Модель', 'Фон', 'Символ', 'Узор'].includes(k)) {
-            charsHtml += `<div class="char-item"><span class="char-label">${escapeHtml(k)}</span><span class="char-value">${escapeHtml(v)}</span></div>`;
-          }
-        });
-      }
-      document.getElementById('giftModalChars').innerHTML = charsHtml || '<div class="char-item">Нет характеристик</div>';
-      openModal('giftModal');
-    }
-
-    function openGiftSelector(type) {
-      document.getElementById('giftSelectorTitle').textContent = type === 'offer' ? 'Выберите ваш подарок' : 'Выберите желаемый подарок';
-      
-      let filtersHtml = '';
-      if (type === 'want') {
-        filtersHtml = `
-          <div style="margin-bottom: 16px;">
-            <div class="filter-selector-title">Фильтры поиска</div>
-            <select id="selectorCollection" onchange="applySelectorFilters('${type}')">
-              <option value="">Все коллекции</option>
-              ${collections.map(c => `<option value="${c.id}">${c.name} (${c.totalFound || 0})</option>`).join('')}
-            </select>
-            <select id="selectorGiftName" onchange="applySelectorFilters('${type}')" style="margin-top: 8px;">
-              <option value="">Все подарки</option>
-              ${[...new Set(allGifts.map(g => g.name))].sort().map(n => `<option value="${n}">${n}</option>`).join('')}
-            </select>
-            <select id="selectorModel" onchange="applySelectorFilters('${type}')" style="margin-top: 8px;">
-              <option value="">Любая модель</option>
-              ${(filterOptions.models || []).map(m => `<option value="${m}">${m}</option>`).join('')}
-            </select>
-            <select id="selectorBackground" onchange="applySelectorFilters('${type}')" style="margin-top: 8px;">
-              <option value="">Любой фон</option>
-              ${(filterOptions.backgrounds || []).map(b => `<option value="${b}">${b}</option>`).join('')}
-            </select>
-            <select id="selectorPattern" onchange="applySelectorFilters('${type}')" style="margin-top: 8px;">
-              <option value="">Любой узор</option>
-              ${(filterOptions.patterns || []).map(p => `<option value="${p}">${p}</option>`).join('')}
-            </select>
-          </div>
-        `;
-      }
-      
-      document.getElementById('giftSelectorFilters').innerHTML = filtersHtml;
-      window.currentSelectorType = type;
-      
-      renderGiftSelectorItems(type, {});
-      openModal('giftSelectorModal');
-    }
-
-    function applySelectorFilters(type) {
-      const filters = {
-        collectionId: document.getElementById('selectorCollection')?.value || null,
-        giftName: document.getElementById('selectorGiftName')?.value || null,
-        model: document.getElementById('selectorModel')?.value || null,
-        background: document.getElementById('selectorBackground')?.value || null,
-        pattern: document.getElementById('selectorPattern')?.value || null
-      };
-      filterGifts(filters);
-      renderGiftSelectorItems(type, filters);
-    }
-
-    function renderGiftSelectorItems(type, filters) {
-      let items = type === 'offer' ? (inventory || []) : (allGifts || []);
-      
-      if (type === 'want') {
-        if (filters.giftName) items = items.filter(i => i.name === filters.giftName);
-        if (filters.model) items = items.filter(i => i.model && i.model.includes(filters.model));
-        if (filters.background) items = items.filter(i => i.background && i.background.includes(filters.background));
-        if (filters.pattern) items = items.filter(i => i.pattern && i.pattern.includes(filters.pattern));
-      }
-      
-      const container = document.getElementById('giftSelectorGrid');
-      
-      if (!items || !items.length) {
-        container.innerHTML = '<div class="empty-state" style="grid-column: span 2; padding: 20px;">Нет доступных подарков</div>';
-        return;
-      }
-      
-      container.innerHTML = items.slice(0, 50).map(i => {
-        const gift = i;
-        return `
-          <div class="gift-selector-item" onclick="selectGift('${type}', ${type === 'offer' ? i.nftId : i.id})">
-            <div class="gift-selector-icon">${type === 'offer' ? '📦' : '🎁'}</div>
-            <div class="gift-selector-name">${escapeHtml(gift.name)} ${type === 'offer' ? '' : '#' + gift.giftId}</div>
-            <div class="gift-selector-details">
-              ${gift.model ? `<span>${escapeHtml(gift.model.substring(0, 12))}${gift.model.length > 12 ? '..' : ''}</span>` : ''}
-              ${gift.background ? `<span>${escapeHtml(gift.background.substring(0, 12))}${gift.background.length > 12 ? '..' : ''}</span>` : ''}
-              ${gift.pattern ? `<span>${escapeHtml(gift.pattern.substring(0, 12))}${gift.pattern.length > 12 ? '..' : ''}</span>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function selectGift(type, id) {
-      const gift = type === 'offer' 
-        ? (inventory || []).find(i => i.nftId == id) 
-        : (allGifts || []).find(g => g.id == id);
-      
-      if (!gift) {
-        showToast('Подарок не найден', 'error');
-        return;
-      }
-      
-      if (type === 'offer') {
-        selectedOfferGift = gift;
-        document.getElementById('selectedOfferName').textContent = gift.name || 'Выбрано';
-        document.getElementById('selectedOfferDetails').innerHTML = 
-          [gift.model, gift.background, gift.pattern].filter(Boolean).join(' ');
-        document.getElementById('selectOfferBtn').classList.add('selected');
-      } else {
-        selectedWantGift = gift;
-        document.getElementById('selectedWantName').textContent = `${gift.name || ''} #${gift.giftId || ''}`;
-        document.getElementById('selectedWantDetails').innerHTML = 
-          [gift.model, gift.background, gift.pattern].filter(Boolean).join(' ');
-        document.getElementById('selectWantBtn').classList.add('selected');
-      }
-      
-      closeModal('giftSelectorModal');
-    }
-
-    function createExchangeOrder() {
-      if (!selectedOfferGift) {
-        showToast('Выберите ваш подарок', 'error');
-        return;
-      }
-      if (!selectedWantGift) {
-        showToast('Выберите желаемый подарок', 'error');
-        return;
-      }
-      
-      if (currentUser && currentUser.balance < 0.1) {
-        showToast('Недостаточно средств для комиссии (0.1 TON)', 'error');
-        return;
-      }
-      
-      showConfirm('Создать заявку на обмен? Комиссия 0.1 TON', async () => {
-        try {
-          tg.sendData(JSON.stringify({ 
-            action: 'create_exchange', 
-            data: { 
-              offerId: selectedOfferGift.nftId, 
-              wantId: selectedWantGift.id 
-            } 
-          }));
-          
-          showToast('Заявка создана!');
-          selectedOfferGift = null;
-          selectedWantGift = null;
-          document.getElementById('selectedOfferName').textContent = 'Выберите';
-          document.getElementById('selectedOfferDetails').innerHTML = '';
-          document.getElementById('selectedWantName').textContent = 'Выберите';
-          document.getElementById('selectedWantDetails').innerHTML = '';
-          document.getElementById('selectOfferBtn').classList.remove('selected');
-          document.getElementById('selectWantBtn').classList.remove('selected');
-          
-          setTimeout(() => {
-            loadOrders();
-            loadInventory();
-          }, 1000);
-        } catch (e) {
-          showToast('Ошибка создания заявки', 'error');
-        }
-      });
-    }
-
-    function acceptExchange(orderId) {
-      if (currentUser && currentUser.balance < 0.1) {
-        showToast('Недостаточно средств для комиссии', 'error');
-        return;
-      }
-      
-      showConfirm('Принять обмен? Спишется 0.1 TON', async () => {
-        try {
-          tg.sendData(JSON.stringify({ 
-            action: 'accept_exchange', 
-            data: { orderId: orderId } 
-          }));
-          
-          showToast('Обмен выполнен!');
-          setTimeout(() => {
-            loadOrders();
-            loadInventory();
-            loadUserProfile();
-          }, 1000);
-        } catch (e) {
-          showToast('Ошибка обмена', 'error');
-        }
-      });
-    }
-
-    function applyFilters() {
-      const filters = {
-        collectionId: document.getElementById('collectionSelect').value 
-          ? parseInt(document.getElementById('collectionSelect').value) : null,
-        giftName: document.getElementById('filterGiftName').value || null,
-        model: document.getElementById('filterModel').value || null,
-        background: document.getElementById('filterBackground').value || null,
-        pattern: document.getElementById('filterPattern').value || null
-      };
-      
-      filterGifts(filters);
-      document.getElementById('filterPanel').classList.remove('active');
-      document.getElementById('collectionPanel').classList.remove('active');
-      
-      // Обновляем через 1 секунду
-      setTimeout(() => loadAllGifts(), 1000);
-    }
-
-    function updateCollectionSelect() {
-      const select = document.getElementById('collectionSelect');
-      if (collections && collections.length) {
-        select.innerHTML = '<option value="">Все коллекции</option>' + 
-          collections.map(c => `<option value="${c.id}">${c.name} (${c.totalFound || 0})</option>`).join('');
-      }
-    }
-
-    function switchTab(tab) {
-      currentTab = tab;
-      document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
-      document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
-      document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
-      
-      document.querySelectorAll('.tab[data-tab]').forEach(t => t.classList.remove('active'));
-      const activeTab = document.querySelector(`.tab[data-tab="${tab}"]`);
-      if (activeTab) activeTab.classList.add('active');
-      
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      const activeNav = document.querySelector(`.nav-item[data-page="${tab}"]`);
-      if (activeNav) activeNav.classList.add('active');
-      
-      if (tab === 'inventory') loadInventory();
-      if (tab === 'exchange') loadOrders();
-      if (tab === 'market') loadAllGifts();
-    }
-
-    function switchExchangeTab(tab) {
-      exchangeTab = tab;
-      document.querySelectorAll('[data-exchange-tab]').forEach(t => t.classList.remove('active'));
-      const activeTab = document.querySelector(`[data-exchange-tab="${tab}"]`);
-      if (activeTab) activeTab.classList.add('active');
-      renderOrders();
-    }
-
-    function toggleFilters() {
-      document.getElementById('filterPanel').classList.toggle('active');
-      document.getElementById('collectionPanel').classList.remove('active');
-    }
-
-    function toggleCollections() {
-      document.getElementById('collectionPanel').classList.toggle('active');
-      document.getElementById('filterPanel').classList.remove('active');
-    }
-
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    // Обработка данных от бота
-    tg.onEvent('viewportChanged', () => {
-      tg.expand();
-    });
-
-    // Пытаемся получить данные через CloudStorage
-    function checkStorageUpdates() {
-      tg.CloudStorage.getItems(['gifts_data', 'inventory_data', 'orders_data', 'filter_options', 'collections_data', 'statistics_data', 'user_profile', 'user_balance'], (err, values) => {
-        if (!err && values) {
-          try {
-            if (values['gifts_data']) {
-              const parsed = JSON.parse(values['gifts_data']);
-              if (parsed.success && parsed.gifts) {
-                allGifts = parsed.gifts;
-                renderGifts();
-                localStorage.setItem('bramls_gifts', values['gifts_data']);
-              }
-            }
-            if (values['inventory_data']) {
-              const parsed = JSON.parse(values['inventory_data']);
-              if (parsed.success) {
-                inventory = parsed.inventory || [];
-                renderInventory();
-              }
-            }
-            if (values['orders_data']) {
-              const parsed = JSON.parse(values['orders_data']);
-              if (parsed.success) {
-                openOrders = parsed.openOrders || [];
-                myOrders = parsed.myOrders || [];
-                renderOrders();
-              }
-            }
-            if (values['filter_options']) {
-              const parsed = JSON.parse(values['filter_options']);
-              if (parsed.success) {
-                filterOptions = {
-                  models: parsed.models || [],
-                  backgrounds: parsed.backgrounds || [],
-                  patterns: parsed.patterns || []
-                };
-              }
-            }
-            if (values['collections_data']) {
-              const parsed = JSON.parse(values['collections_data']);
-              if (parsed.success && parsed.collections) {
-                collections = parsed.collections;
-                updateCollectionSelect();
-              }
-            }
-            if (values['user_balance']) {
-              const balance = parseFloat(values['user_balance']);
-              if (!isNaN(balance)) {
-                document.getElementById('tonBalance').textContent = balance.toFixed(2);
-                if (currentUser) currentUser.balance = balance;
-              }
-            }
-            if (values['user_profile']) {
-              const parsed = JSON.parse(values['user_profile']);
-              if (parsed.success && parsed.user) {
-                currentUser = { ...currentUser, ...parsed.user };
-                updateProfileUI();
-              }
-            }
-            if (values['statistics_data']) {
-              const parsed = JSON.parse(values['statistics_data']);
-              if (parsed.totalNFTs) {
-                document.getElementById('completionRate').textContent = parsed.totalNFTs;
-              }
-              if (parsed.totalExchanges) {
-                document.getElementById('totalExchanges').textContent = parsed.totalExchanges;
-              }
-            }
-          } catch (e) {
-            console.error('Error parsing storage data:', e);
-          }
-        }
-      });
-    }
-
-    // Привязка обработчиков
-    document.getElementById('walletBtn').onclick = () => {
-      showToast('TON кошелёк — демо-режим');
+  // Filters
+  async function applyFilters() {
+    const filters = {
+      collectionId: document.getElementById('collectionSelect').value || null,
+      giftName: document.getElementById('filterName').value || null,
+      model: document.getElementById('filterModel').value || null,
+      background: document.getElementById('filterBackground').value || null,
+      pattern: document.getElementById('filterPattern').value || null
     };
-    document.getElementById('createOrderBtn').onclick = createExchangeOrder;
-    document.getElementById('selectOfferBtn').onclick = () => openGiftSelector('offer');
-    document.getElementById('selectWantBtn').onclick = () => openGiftSelector('want');
-    document.getElementById('filterToggleBtn').onclick = toggleFilters;
-    document.getElementById('collectionToggleBtn').onclick = toggleCollections;
-    document.getElementById('applyFiltersBtn').onclick = applyFilters;
-    document.getElementById('applyCollectionBtn').onclick = applyFilters;
-    
-    document.querySelectorAll('.tab[data-tab]').forEach(t => {
-      t.onclick = () => switchTab(t.dataset.tab);
-    });
-    document.querySelectorAll('[data-exchange-tab]').forEach(t => {
-      t.onclick = () => switchExchangeTab(t.dataset.exchangeTab);
-    });
-    document.querySelectorAll('.nav-item').forEach(i => {
-      i.onclick = () => switchTab(i.dataset.page);
-    });
+    const r = await api('filter_gifts', filters);
+    if (r.success) { allGifts = r.gifts || []; renderMarket(); }
+    document.getElementById('collectionPanel').classList.remove('active');
+    document.getElementById('filterPanel').classList.remove('active');
+  }
 
-    // Инициализация
-    loadData();
-    
-    // Периодическая проверка обновлений
-    setInterval(checkStorageUpdates, 3000);
+  // UI helpers
+  function openModal(id) { document.getElementById(id).classList.add('active'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  function toast(msg) {
+    const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+    document.body.appendChild(t); setTimeout(() => t.remove(), 2500);
+  }
+  function esc(s) { return String(s||'').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+  // Tab switching
+  function switchTab(tab) {
+    document.getElementById('marketTab').style.display = tab === 'market' ? 'block' : 'none';
+    document.getElementById('inventoryTab').style.display = tab === 'inventory' ? 'block' : 'none';
+    document.getElementById('exchangeTab').style.display = tab === 'exchange' ? 'block' : 'none';
+    document.querySelectorAll('.tab[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.page === tab));
+    if (tab === 'exchange') refreshExchange();
+    if (tab === 'inventory') refreshInventory();
+  }
+
+  // Event bindings
+  document.getElementById('filterToggleBtn').onclick = () => {
+    document.getElementById('filterPanel').classList.toggle('active');
+    document.getElementById('collectionPanel').classList.remove('active');
+  };
+  document.getElementById('collectionToggleBtn').onclick = () => {
+    document.getElementById('collectionPanel').classList.toggle('active');
+    document.getElementById('filterPanel').classList.remove('active');
+  };
+  document.getElementById('applyFiltersBtn').onclick = applyFilters;
+  document.getElementById('applyCollectionBtn').onclick = applyFilters;
+  document.getElementById('createOrderBtn').onclick = createOrder;
+  document.querySelectorAll('.tab[data-tab]').forEach(t => t.onclick = () => switchTab(t.dataset.tab));
+  document.querySelectorAll('.nav-item').forEach(n => n.onclick = () => switchTab(n.dataset.page));
+  document.querySelectorAll('.tab[data-ex-tab]').forEach(t => t.onclick = () => {
+    currentExTab = t.dataset.exTab;
+    document.querySelectorAll('.tab[data-ex-tab]').forEach(el => el.classList.toggle('active', el.dataset.exTab === currentExTab));
+    renderOrders();
+  });
+
+  init();
 </script>
 </body>
 </html>
